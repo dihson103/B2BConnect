@@ -1,0 +1,43 @@
+version: "3.4"
+
+networks:
+  codluck-backend:
+
+services:
+  postgres:
+    container_name: postgres-codluck
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - codluck-backend
+
+  redis:
+    image: redis:6.0.7
+    container_name: redis-codluck
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - 6379:6379
+    networks:
+      - codluck-backend
+
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: reverse_proxy
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - capstone
+  #   networks:
+  #     - capstone-backend
+
+volumes:
+  pgdata:
+  redis_volume_data:
