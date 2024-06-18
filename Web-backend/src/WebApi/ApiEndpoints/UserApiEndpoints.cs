@@ -1,4 +1,5 @@
 ﻿using Carter;
+using Domain.Abstractioins.Exceptions;
 
 namespace WebApi.ApiEndpoints;
 
@@ -8,6 +9,7 @@ public class UserApiEndpoints : CarterModule
     {
         app.MapGet("test", () =>
         {
+            throw new MyException(333, "eerrr");
             return Results.Ok("hello");
         });
     }

@@ -2,6 +2,7 @@ using Application;
 using Carter;
 using Infrastructure;
 using Persistence;
+using WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("corspolicy");
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapCarter();
 
