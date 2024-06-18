@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddApplication()
-    .AddInfrastructure()
+    .AddInfrastructure(builder.Configuration)
     .AddPersistence(builder.Configuration);
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
