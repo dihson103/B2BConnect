@@ -12,7 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Contract\Contract.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UseCases\Events\" />
+    <Folder Include="UseCases\Queries\" />
   </ItemGroup>
 
 </Project>
