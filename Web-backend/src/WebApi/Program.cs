@@ -29,11 +29,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseCors("corspolicy");
 
 app.UseHttpsRedirection();
-
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapCarter();
 
