@@ -25,13 +25,10 @@ export default function LoginForm() {
             <Button type='submit' className='w-full'>
               Đăng nhập
             </Button>
-            <Button variant='outline' className='w-full'>
-              Đăng nhập bằng Google
-            </Button>
           </div>
           <div className='mt-4 text-center text-sm'>
             Chưa có tài khoản?{' '}
-            <Link href='#' className='underline'>
+            <Link href='/register' className='underline'>
               Đăng ký
             </Link>
           </div>
