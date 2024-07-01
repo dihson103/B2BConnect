@@ -18,3 +18,8 @@ export type User = {
   isActive: boolean
   roleId: number
 }
+
+export type LoginType = {
+  id: string
+  password: string
+}

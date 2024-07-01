@@ -1,4 +1,5 @@
-﻿using Domain.Abstractioins.Exceptions;
+﻿using System.Net;
+using Domain.Abstractioins.Exceptions;
 
 namespace WebApi.Middlewares;
 
@@ -20,13 +21,14 @@ public class ExceptionMiddleware
         catch (MyException excepion)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = excepion.StatusCode;
+            context.Response.StatusCode = (int) HttpStatusCode.OK;
 
             var error = new
             {
                 Status = excepion.StatusCode,
                 Message = excepion?.Message ?? "My exception",
-                Error = excepion?.Error ?? null
+                Error = excepion?.Error ?? null,
+                IsSuccess = false
             };
 
             await context.Response.WriteAsJsonAsync(error);
