@@ -9,6 +9,11 @@ public static class DependencyInjection
     {
         var assembly = typeof(DependencyInjection).Assembly;
 
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssemblies(assembly);
+        });
+
         services.AddValidatorsFromAssembly(assembly);
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

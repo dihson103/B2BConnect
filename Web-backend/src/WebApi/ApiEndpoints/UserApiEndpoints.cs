@@ -1,5 +1,7 @@
 ﻿using Carter;
+using Contract.Services.Tests;
 using Domain.Abstractioins.Exceptions;
+using MediatR;
 
 namespace WebApi.ApiEndpoints;
 
@@ -7,10 +9,12 @@ public class UserApiEndpoints : CarterModule
 {
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("test", () =>
+        app.MapGet("test", async (ISender sender) =>
         {
-            throw new MyException(333, "eerrr");
-            return Results.Ok("hello");
+            var testCommand = new TestCommand();
+            var result = await sender.Send(testCommand); 
+
+            return Results.Ok(result);
         });
     }
 }
