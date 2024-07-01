@@ -18,6 +18,7 @@ public class Business : EntityBase<int>
     public Representative? Representative { get; set; }
     public List<Sector>? Sectors { get; set; }
     public List<Participation>? Participations { get; set; }
+    public List<Image>? Images { get; set; }
     private Business()
     {
     }
