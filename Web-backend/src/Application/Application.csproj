@@ -17,8 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Events\" />
-    <Folder Include="UseCases\Queries\" />
+    <Folder Include="UseCases\Commands\Events\Update\" />
   </ItemGroup>
 
 </Project>

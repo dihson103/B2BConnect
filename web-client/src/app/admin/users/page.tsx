@@ -1,6 +1,6 @@
 import UserTableHeader from '@/app/admin/users/components/table-header-feature'
 import AppUserTable from '@/app/admin/users/components/table-users'
-import AppUserPagination from '@/components/table-pagination'
+import AppPagination from '@/components/table-pagination'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { SearchUserOption, User } from '@/types/user.types'
@@ -85,7 +85,7 @@ export default function UsersPage({ searchParams }: Props) {
             <AppUserTable data={users} />
           </CardContent>
           <CardFooter>
-            <AppUserPagination />
+            <AppPagination currentPage={searchParams.pageIndex ? Number(searchParams.pageIndex) : 1} totalPages={10} />
           </CardFooter>
         </Card>
       </TabsContent>

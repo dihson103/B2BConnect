@@ -29,7 +29,7 @@ const request = async <Response>(
     ...options?.headers
   }
 
-  const baseUrl = options?.baseUrl ?? envConfig.BASE_URL
+  const baseUrl = options?.baseUrl ?? envConfig.API_ENDPOINT
   const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : url
 
   const res = await fetch(fullUrl, {
