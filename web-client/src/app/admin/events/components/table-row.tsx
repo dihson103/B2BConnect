@@ -24,6 +24,7 @@ export default function EventTableRow({ data }: Props) {
       <TableCell>
         <Badge variant='outline'>{data.statusDescription}</Badge>
       </TableCell>
+      <TableCell className='font-medium'>{data.location}</TableCell>
       <TableCell className='hidden md:table-cell'>{data.startDate}</TableCell>
       <TableCell className='hidden md:table-cell'>{data.endDate}</TableCell>
       <TableCell>

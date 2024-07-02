@@ -80,7 +80,7 @@ export default async function EventPage({ searchParams }: Props) {
             <AppEventTable data={events} />
           </CardContent>
           <CardFooter>
-            <AppPagination currentPage={1} totalPages={10} />
+            <AppPagination currentPage={searchParams.pageIndex ? Number(searchParams.pageIndex) : 1} totalPages={10} />
           </CardFooter>
         </Card>
       </TabsContent>
