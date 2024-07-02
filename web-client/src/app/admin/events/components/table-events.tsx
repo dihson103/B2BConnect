@@ -17,6 +17,7 @@ export default function AppEventTable({ data }: Props) {
             </TableHead>
             <TableHead>Tên sự kiện</TableHead>
             <TableHead>Trạng thái sự kiện</TableHead>
+            <TableHead>Địa điểm tổ chức</TableHead>
             <TableHead className='hidden md:table-cell'>Ngày bắt đầu</TableHead>
             <TableHead className='hidden md:table-cell'>Kết thúc</TableHead>
             <TableHead>
