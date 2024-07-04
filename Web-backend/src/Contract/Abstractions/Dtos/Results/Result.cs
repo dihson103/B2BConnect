@@ -41,6 +41,15 @@ public class Result
                 Data = tData,
                 IsSuccess = true
             };
+
+        public static Success<TData> ActionCommand(TData tData, string message = "Hành động thành công")
+            => new Success<TData>()
+            {
+                Status = (int)HttpStatusCode.OK,
+                Message = message,
+                Data = tData,
+                IsSuccess = true
+            };
     }
 
 }

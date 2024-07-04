@@ -7,4 +7,6 @@ public record CreateEventCommand(
     string? Description,
     DateTime StartAt,
     DateTime EndAt,
-    EventStatus Status) : ICommand;
+    string Location,
+    string Image,
+    List<Guid> IndustryIds) : ICommand;

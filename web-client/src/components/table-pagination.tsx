@@ -32,7 +32,7 @@ const RenderPageNumber = ({
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageIndex) => (
           <PaginationItem
             key={pageIndex}
-            className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 rounded' : ''}`}
+            className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 dark:bg-muted/40 rounded' : ''}`}
           >
             <PaginationLink onClick={handleClick(pageIndex)}>{pageIndex}</PaginationLink>
           </PaginationItem>
@@ -47,7 +47,7 @@ const RenderPageNumber = ({
         {Array.from({ length: 5 }, (_, i) => i + 1).map((pageIndex) => (
           <PaginationItem
             key={pageIndex}
-            className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 rounded' : ''}`}
+            className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 dark:bg-muted/40 rounded' : ''}`}
           >
             <PaginationLink onClick={handleClick(pageIndex)}>{pageIndex}</PaginationLink>
           </PaginationItem>
@@ -74,7 +74,7 @@ const RenderPageNumber = ({
         {Array.from({ length: 5 }, (_, i) => totalPages - 4 + i).map((pageIndex) => (
           <PaginationItem
             key={pageIndex}
-            className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 rounded' : ''}`}
+            className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 dark:bg-muted/40 rounded' : ''}`}
           >
             <PaginationLink onClick={handleClick(pageIndex)}>{pageIndex}</PaginationLink>
           </PaginationItem>
@@ -94,7 +94,7 @@ const RenderPageNumber = ({
       {Array.from({ length: 5 }, (_, i) => currentPage - 2 + i).map((pageIndex) => (
         <PaginationItem
           key={pageIndex}
-          className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 rounded' : ''}`}
+          className={`hover:cursor-pointer ${pageIndex === currentPage ? 'bg-gray-200 dark:bg-muted/40 rounded' : ''}`}
         >
           <PaginationLink onClick={handleClick(pageIndex)}>{pageIndex}</PaginationLink>
         </PaginationItem>

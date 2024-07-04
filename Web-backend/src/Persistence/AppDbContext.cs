@@ -3,7 +3,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
-internal class AppDbContext : DbContext, IUnitOfWork
+public class AppDbContext : DbContext, IUnitOfWork
 {
     public AppDbContext(DbContextOptions options) : base(options)
     {
@@ -19,6 +19,7 @@ internal class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Event> Events { get; set; }
     public DbSet<Participation> Participations { get; set; }
     public DbSet<Image> Images { get; set; }
+    public DbSet<EventIndustry> EventIndustries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,6 +64,8 @@ internal class AppDbContext : DbContext, IUnitOfWork
         modelBuilder.Entity<Event>(entity =>
         {
             entity.Property(e => e.Name).HasColumnType("varchar(100)");
+            entity.Property(e => e.Location).HasColumnType("varchar(100)");
+            entity.Property(e => e.Image).HasColumnType("varchar(50)");
         });
 
         modelBuilder.Entity<Verification>(entity =>
@@ -86,5 +89,8 @@ internal class AppDbContext : DbContext, IUnitOfWork
         {
             entity.Property(e => e.Value).HasColumnType("varchar(50)");
         });
+
+        modelBuilder.Entity<EventIndustry>()
+            .HasKey(s => new { s.EventId, s.IndustryId });
     }
 }
