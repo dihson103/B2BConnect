@@ -1,4 +1,4 @@
-import UpdateEventForm from '@/app/admin/events/components/update-event-form'
+import UpdateEventForm from '@/app/admin/events/_components/update-event-form'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -9,10 +9,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
 
-type Props = {
-  id: number
-}
+// type Props = {
+//   id: number
+// }
 
-export default function EventTableRowAction({ id }: Props) {
-  return <UpdateEventForm />
-}
+// export default function EventTableRowAction({ id }: Props) {
+//   return <UpdateEventForm />
+// }
