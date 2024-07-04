@@ -23,4 +23,17 @@ internal class IndustryRepository : IIndustryRepository
 
         return numberIndustry == industryIds.Count();
     }
+
+    public async Task<List<Industry>> SearchIndustrieAsync(string name)
+    {
+        var query = _context.Industries.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query = query.Where(industry => industry.Name.ToLower().Contains(name.ToLower()));
+        }
+
+        return await query.ToListAsync();
+    }
+
 }

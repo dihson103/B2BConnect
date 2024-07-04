@@ -13,17 +13,22 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { PlusCircle, Upload } from 'lucide-react'
+import { BadgeMinus, Plus, PlusCircle, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreateEventFormType, CreateEventSchema } from '@/rules/event.rules'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import IndustryComboboxPopover from '@/components/combobox-industry-popover'
+import { IndustryResponse } from '@/types/industry.types'
 
 export default function CreateEventForm() {
   const [image, setImage] = useState<File | null>(null)
   const [fileMessage, setFileMessage] = useState<string | null>(null)
+  const [industriesChoosed, setIndustriesChoosed] = useState<IndustryResponse[] | null>(null)
 
   const form = useForm<CreateEventFormType>({
     resolver: zodResolver(CreateEventSchema),
@@ -50,6 +55,15 @@ export default function CreateEventForm() {
   const onSubmit = (data: CreateEventFormType) => {
     setFileMessage(image ? null : 'Bạn cần nhập ảnh sự kiện')
     console.log('>>>> data', data)
+  }
+
+  const handleRemove = (id: string) => () => {
+    setIndustriesChoosed((prev) => {
+      if (prev === null) {
+        return null
+      }
+      return prev.filter((industry) => industry.id !== id)
+    })
   }
 
   return (
@@ -165,6 +179,22 @@ export default function CreateEventForm() {
                   )
                 }}
               />
+              <div className='grid gap-2'>
+                <Label htmlFor='email'>Lĩnh vực trong sự kiện</Label>
+                <div>
+                  {industriesChoosed?.map((industry) => (
+                    <Badge variant='outline' key={industry.id} className='relative mr-2'>
+                      {industry.name}
+                      <BadgeMinus
+                        onClick={handleRemove(industry.id)}
+                        className='h-3 w-3 absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 hover:cursor-pointer'
+                      />
+                    </Badge>
+                  ))}
+                </div>
+                <IndustryComboboxPopover setIndustriesChoosed={setIndustriesChoosed} />
+              </div>
+
               <FormField
                 control={form.control}
                 name='description'

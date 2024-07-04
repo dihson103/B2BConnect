@@ -1,6 +1,4 @@
-import { Bell, Home, LineChart, Package, Package2, PanelLeft, ShoppingCart, Users2 } from 'lucide-react'
-import Link from 'next/link'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Bell } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +13,7 @@ import { ModeToggle } from '@/components/mode-toggle'
 import AppSideBar from '@/app/admin/components/side-bar'
 import AppBreadcrumb from '@/app/admin/components/breadcrumb'
 import { Metadata } from 'next'
+import AppSideBarMobile from '@/app/admin/components/side-bar-mobile'
 
 export const metadata: Metadata = {
   title: 'Trang quản lý',
@@ -31,54 +30,7 @@ export default async function AdminLayout({
       <AppSideBar />
       <div className='flex flex-col sm:gap-4 sm:py-4 sm:pl-14'>
         <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size='icon' variant='outline' className='sm:hidden'>
-                <PanelLeft className='h-5 w-5' />
-                <span className='sr-only'>Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side='left' className='sm:max-w-xs'>
-              <nav className='grid gap-6 text-lg font-medium'>
-                <Link
-                  href='#'
-                  className='group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base'
-                >
-                  <Package2 className='h-5 w-5 transition-all group-hover:scale-110' />
-                  <span className='sr-only'>Acme Inc</span>
-                </Link>
-                <Link
-                  href='/admin'
-                  className='flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground'
-                >
-                  <Home className='h-5 w-5' />
-                  Dashboard
-                </Link>
-                <Link
-                  href='/admin/orders'
-                  className='flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground'
-                >
-                  <ShoppingCart className='h-5 w-5' />
-                  Orders
-                </Link>
-                <Link href='/admin/products' className='flex items-center gap-4 px-2.5 text-foreground'>
-                  <Package className='h-5 w-5' />
-                  Products
-                </Link>
-                <Link
-                  href='/admin/users'
-                  className='flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground'
-                >
-                  <Users2 className='h-5 w-5' />
-                  Users
-                </Link>
-                <Link href='#' className='flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground'>
-                  <LineChart className='h-5 w-5' />
-                  Settings
-                </Link>
-              </nav>
-            </SheetContent>
-          </Sheet>
+          <AppSideBarMobile />
           <AppBreadcrumb />
 
           <div className='ml-auto flex items-center gap-4'>
