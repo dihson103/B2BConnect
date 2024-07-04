@@ -87,7 +87,7 @@ export default async function EventPage({ searchParams }: Props) {
       <TabsContent value='all'>
         <Card x-chunk='dashboard-06-chunk-0'>
           <CardHeader>
-            <CardTitle className='text-center text-xl'>Quản lý sự kiện</CardTitle>
+            <CardTitle className='text-center text-3xl'>Quản lý sự kiện</CardTitle>
           </CardHeader>
           <CardContent>
             <EventTableHeader searchParams={searchParams} />

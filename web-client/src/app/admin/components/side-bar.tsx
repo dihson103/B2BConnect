@@ -1,5 +1,5 @@
 import AppSideBarButton from '@/app/admin/components/side-button'
-import { Home, LineChart, Package, Package2, Settings, ShoppingCart, Users2 } from 'lucide-react'
+import { CalendarCheck, Home, LineChart, Package, Package2, Settings, Users2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AppSideBar() {
@@ -14,17 +14,17 @@ export default function AppSideBar() {
           <span className='sr-only'>Acme Inc</span>
         </Link>
 
-        <AppSideBarButton url='/admin/dashboard' displayValue='Dashboard'>
+        <AppSideBarButton url='/admin/dashboard' displayValue='Trang thống kê'>
           <Home className='h-5 w-5' />
         </AppSideBarButton>
-        <AppSideBarButton url='/admin/orders' displayValue='Orders'>
-          <ShoppingCart className='h-5 w-5' />
+        <AppSideBarButton url='/admin/users' displayValue='Quản lý người dùng'>
+          <Users2 className='h-5 w-5' />
+        </AppSideBarButton>
+        <AppSideBarButton url='/admin/events' displayValue='Quản lý sự kiện'>
+          <CalendarCheck className='h-5 w-5' />
         </AppSideBarButton>
         <AppSideBarButton url='/admin/products' displayValue='Products'>
           <Package className='h-5 w-5' />
-        </AppSideBarButton>
-        <AppSideBarButton url='/admin/users' displayValue='Users'>
-          <Users2 className='h-5 w-5' />
         </AppSideBarButton>
         <AppSideBarButton url='/admin/anlytics' displayValue='Analytics'>
           <LineChart className='h-5 w-5' />

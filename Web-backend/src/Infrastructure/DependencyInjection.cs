@@ -20,6 +20,7 @@ public static class DependencyInjection
 
         });
         services.AddScoped<IRedisService, RedisService>();
+        services.AddScoped<IFileService, FileService>();
 
         return services;
     }
