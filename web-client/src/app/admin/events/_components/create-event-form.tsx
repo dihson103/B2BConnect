@@ -2,7 +2,7 @@
 
 import ImageDisplay from '@/components/image-choosed-display'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import {
   Dialog,
   DialogClose,
@@ -24,11 +24,20 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import IndustryComboboxPopover from '@/components/combobox-industry-popover'
 import { IndustryResponse } from '@/types/industry.types'
+import { uploadFileAction } from '@/actions/file.action'
+import { apiErrorHandler } from '@/lib/utils'
+import { useToast } from '@/components/ui/use-toast'
+import { CreateEventType } from '@/types/event.types'
+import { createEventAction } from '@/actions/event.actions'
 
 export default function CreateEventForm() {
+  const { toast } = useToast()
+
   const [image, setImage] = useState<File | null>(null)
   const [fileMessage, setFileMessage] = useState<string | null>(null)
+  const [industryMessage, setIndustryMessage] = useState<string | null>(null)
   const [industriesChoosed, setIndustriesChoosed] = useState<IndustryResponse[] | null>(null)
+  const [open, setOpen] = useState(false)
 
   const form = useForm<CreateEventFormType>({
     resolver: zodResolver(CreateEventSchema),
@@ -52,9 +61,50 @@ export default function CreateEventForm() {
     setFileMessage('Bạn cần nhập ảnh sự kiện')
   }
 
-  const onSubmit = (data: CreateEventFormType) => {
-    setFileMessage(image ? null : 'Bạn cần nhập ảnh sự kiện')
-    console.log('>>>> data', data)
+  const onSubmit = async (data: CreateEventFormType) => {
+    if (image == null) {
+      setFileMessage('Bạn cần nhập ảnh sự kiện')
+      return
+    }
+
+    if (industriesChoosed == null || industriesChoosed.length === 0) {
+      setIndustryMessage('Bạn cần chọn ít nhất 1 lĩnh vực')
+      return
+    }
+
+    try {
+      const imageBody = new FormData()
+      imageBody.append('file', image)
+
+      const response = await uploadFileAction(imageBody)
+      const uploadedImage = response.data.fileName
+
+      const body: CreateEventType = {
+        name: data.name,
+        description: data.description,
+        startAt: new Date(data.startDate).toISOString(),
+        endAt: new Date(data.endDate).toISOString(),
+        location: data.location,
+        image: uploadedImage,
+        industryIds: industriesChoosed.map((industry) => industry.id)
+      }
+
+      const res = await createEventAction(body)
+
+      toast({
+        title: 'Success',
+        description: res.message,
+        duration: 5000
+      })
+
+      form.reset()
+      setImage(null)
+      setIndustriesChoosed(null)
+      setOpen(false)
+    } catch (error: any) {
+      console.error(error.message)
+      apiErrorHandler(error.message)
+    }
   }
 
   const handleRemove = (id: string) => () => {
@@ -67,7 +117,7 @@ export default function CreateEventForm() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size='sm' className='h-7 gap-1'>
           <PlusCircle className='h-3.5 w-3.5' />
@@ -192,6 +242,11 @@ export default function CreateEventForm() {
                     </Badge>
                   ))}
                 </div>
+                {(industriesChoosed == null || industriesChoosed.length === 0) && industryMessage != null ? (
+                  <span className='text-[0.8rem] font-medium text-destructive'>{industryMessage}</span>
+                ) : (
+                  <></>
+                )}
                 <IndustryComboboxPopover setIndustriesChoosed={setIndustriesChoosed} />
               </div>
 

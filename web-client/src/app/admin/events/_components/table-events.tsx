@@ -1,6 +1,6 @@
 import { Event } from '@/types/event.types'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import EventTableRow from '@/app/admin/events/components/table-row'
+import EventTableRow from '@/app/admin/events/_components/table-row'
 
 type Props = {
   data?: Event[]

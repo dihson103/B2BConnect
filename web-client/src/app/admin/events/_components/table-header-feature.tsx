@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { File, PlusCircle, Search } from 'lucide-react'
 import { SearchEventOption } from '@/types/event.types'
-import CreateEventForm from '@/app/admin/events/components/create-event-form'
+import CreateEventForm from '@/app/admin/events/_components/create-event-form'
 
 type Props = {
   searchParams: SearchEventOption

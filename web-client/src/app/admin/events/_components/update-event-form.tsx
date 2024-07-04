@@ -21,21 +21,22 @@ import { CreateEventFormType, CreateEventSchema } from '@/rules/event.rules'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Event } from '@/types/event.types'
+import { convertDateTimeToDisPlayInUpdateForm } from '@/lib/date'
 
 type Props = {
   data: Event
 }
 
 export default function UpdateEventForm({ data }: Props) {
-  const [image, setImage] = useState<string | null>(data.image)
+  const [image, setImage] = useState<string | null>(`http://localhost:7001/api/files/${data.image}`)
   const [fileMessage, setFileMessage] = useState<string | null>(null)
 
   const form = useForm<CreateEventFormType>({
     resolver: zodResolver(CreateEventSchema),
     defaultValues: {
       name: data.name,
-      startDate: data.startDate,
-      endDate: data.endDate,
+      startDate: convertDateTimeToDisPlayInUpdateForm(data.startAt),
+      endDate: convertDateTimeToDisPlayInUpdateForm(data.endAt),
       location: data.location,
       description: data.description,
       image: data.image
@@ -44,7 +45,7 @@ export default function UpdateEventForm({ data }: Props) {
 
   const handleUploadPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null
-    setImage(URL.createObjectURL(file))
+    setImage(file ? URL.createObjectURL(file) : null)
     setFileMessage(null)
   }
 
