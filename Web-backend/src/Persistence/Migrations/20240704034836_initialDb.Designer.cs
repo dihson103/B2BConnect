@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240701075030_updateBusiness")]
-    partial class updateBusiness
+    [Migration("20240704034836_initialDb")]
+    partial class initialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Account", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -61,18 +59,16 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Branch", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .HasColumnType("varchar(50)");
@@ -94,14 +90,12 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Business", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AvatarImage")
                         .HasColumnType("varchar(50)");
@@ -122,8 +116,8 @@ namespace Persistence.Migrations
                     b.Property<int>("NumberOfEmployee")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RepresentativeId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("RepresentativeId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("TaxCode")
                         .IsRequired()
@@ -148,24 +142,23 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -177,27 +170,34 @@ namespace Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.HasKey("Id");
 
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("Domain.Entities.EventIndustry", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("IndustryId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EventId", "IndustryId");
+
+                    b.HasIndex("IndustryId");
+
+                    b.ToTable("EventIndustries");
+                });
+
             modelBuilder.Entity("Domain.Entities.Image", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -212,11 +212,9 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Industry", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -229,30 +227,17 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Participation", b =>
                 {
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("EventId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateOnly>("JoinDate")
                         .HasColumnType("date");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("BusinessId", "EventId");
 
@@ -263,11 +248,9 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Representative", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -296,11 +279,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Sector", b =>
                 {
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("IndustryId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("IndustryId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("BusinessId", "IndustryId");
 
@@ -311,14 +294,12 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Verification", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("BusinessLicense")
                         .IsRequired()
@@ -328,13 +309,6 @@ namespace Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("CheckedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EstablishmentCertificate")
@@ -349,12 +323,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessId");
@@ -365,7 +333,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Branch", b =>
                 {
                     b.HasOne("Domain.Entities.Business", "Business")
-                        .WithMany()
+                        .WithMany("Branches")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -388,6 +356,25 @@ namespace Persistence.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Representative");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventIndustry", b =>
+                {
+                    b.HasOne("Domain.Entities.Event", "Event")
+                        .WithMany("EventIndustries")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Industry", "Industry")
+                        .WithMany("EventIndustries")
+                        .HasForeignKey("IndustryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Industry");
                 });
 
             modelBuilder.Entity("Domain.Entities.Image", b =>
@@ -458,6 +445,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Business", b =>
                 {
+                    b.Navigation("Branches");
+
                     b.Navigation("Images");
 
                     b.Navigation("Participations");
@@ -467,11 +456,15 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
+                    b.Navigation("EventIndustries");
+
                     b.Navigation("Participations");
                 });
 
             modelBuilder.Entity("Domain.Entities.Industry", b =>
                 {
+                    b.Navigation("EventIndustries");
+
                     b.Navigation("Sectors");
                 });
 

@@ -10,6 +10,7 @@ export type Event = {
   statusDescription: string
   location: string
   image: string
+  description: string
 }
 
 export type SearchEvent = SearchResponse<Event[] | null>

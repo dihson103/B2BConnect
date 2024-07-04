@@ -10,5 +10,5 @@ public interface IEventRepository
 {
     void Add(Event Event);
     Task<bool> IsEventExistAsync(string name);
-    Task<Event> GetByIdAsync(int id);
+    Task<Event> GetByIdAsync(Guid id);
 }
