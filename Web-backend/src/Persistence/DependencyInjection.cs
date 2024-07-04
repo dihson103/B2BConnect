@@ -23,6 +23,8 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork>(option => option.GetRequiredService<AppDbContext>());
         services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<IIndustryRepository, IndustryRepository>();
+        services.AddScoped<IEventIndustryRepository, EventIndustryRepository>();
 
         return services;
     }

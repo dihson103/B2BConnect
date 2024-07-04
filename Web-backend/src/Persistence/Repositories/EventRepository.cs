@@ -17,7 +17,7 @@ internal class EventRepository : IEventRepository
         _context.Events.Add(Event);
     }
 
-    public async Task<Event> GetByIdAsync(int id)
+    public async Task<Event> GetByIdAsync(Guid id)
     {
         return await _context.Events
             .SingleOrDefaultAsync(e => e.Id == id);

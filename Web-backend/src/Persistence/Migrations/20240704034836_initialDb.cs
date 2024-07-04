@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Persistence.Migrations;
 
 /// <inheritdoc />
-public partial class InitialDatabase : Migration
+public partial class initialDb : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,8 +15,7 @@ public partial class InitialDatabase : Migration
             name: "Accounts",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 Email = table.Column<string>(type: "varchar(50)", nullable: false),
                 Password = table.Column<string>(type: "varchar(100)", nullable: false),
                 IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
@@ -32,17 +30,14 @@ public partial class InitialDatabase : Migration
             name: "Events",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 Name = table.Column<string>(type: "varchar(100)", nullable: false),
                 Description = table.Column<string>(type: "text", nullable: true),
                 StartAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 EndAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 Status = table.Column<int>(type: "integer", nullable: false),
-                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                CreatedBy = table.Column<string>(type: "text", nullable: false),
-                UpdatedBy = table.Column<string>(type: "text", nullable: true)
+                Location = table.Column<string>(type: "varchar(100)", nullable: false),
+                Image = table.Column<string>(type: "varchar(50)", nullable: false)
             },
             constraints: table =>
             {
@@ -53,8 +48,7 @@ public partial class InitialDatabase : Migration
             name: "Industries",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 Name = table.Column<string>(type: "varchar(200)", nullable: false)
             },
             constraints: table =>
@@ -66,8 +60,7 @@ public partial class InitialDatabase : Migration
             name: "Representatives",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 GovernmentId = table.Column<string>(type: "varchar(12)", nullable: false),
                 Fullname = table.Column<string>(type: "varchar(50)", nullable: false),
                 Dob = table.Column<DateOnly>(type: "date", nullable: false),
@@ -80,11 +73,34 @@ public partial class InitialDatabase : Migration
             });
 
         migrationBuilder.CreateTable(
+            name: "EventIndustries",
+            columns: table => new
+            {
+                EventId = table.Column<Guid>(type: "uuid", nullable: false),
+                IndustryId = table.Column<Guid>(type: "uuid", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_EventIndustries", x => new { x.EventId, x.IndustryId });
+                table.ForeignKey(
+                    name: "FK_EventIndustries_Events_EventId",
+                    column: x => x.EventId,
+                    principalTable: "Events",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+                table.ForeignKey(
+                    name: "FK_EventIndustries_Industries_IndustryId",
+                    column: x => x.IndustryId,
+                    principalTable: "Industries",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        migrationBuilder.CreateTable(
             name: "Businesses",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 TaxCode = table.Column<string>(type: "varchar(15)", nullable: false),
                 Name = table.Column<string>(type: "varchar(100)", nullable: false),
                 DateOfEstablishment = table.Column<DateOnly>(type: "date", nullable: false),
@@ -93,8 +109,8 @@ public partial class InitialDatabase : Migration
                 CoverImage = table.Column<string>(type: "varchar(50)", nullable: true),
                 NumberOfEmployee = table.Column<int>(type: "integer", nullable: false),
                 IsVerified = table.Column<bool>(type: "boolean", nullable: false),
-                AccountId = table.Column<int>(type: "integer", nullable: false),
-                RepresentativeId = table.Column<int>(type: "integer", nullable: true)
+                AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                RepresentativeId = table.Column<Guid>(type: "uuid", nullable: true)
             },
             constraints: table =>
             {
@@ -116,13 +132,12 @@ public partial class InitialDatabase : Migration
             name: "Branches",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 Email = table.Column<string>(type: "varchar(50)", nullable: true),
                 Phone = table.Column<string>(type: "varchar(10)", nullable: true),
                 Address = table.Column<string>(type: "varchar(200)", nullable: false),
                 IsMainBranch = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                BusinessId = table.Column<int>(type: "integer", nullable: false)
+                BusinessId = table.Column<Guid>(type: "uuid", nullable: false)
             },
             constraints: table =>
             {
@@ -139,10 +154,9 @@ public partial class InitialDatabase : Migration
             name: "Images",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 Value = table.Column<string>(type: "varchar(50)", nullable: false),
-                BusinessId = table.Column<int>(type: "integer", nullable: false)
+                BusinessId = table.Column<Guid>(type: "uuid", nullable: false)
             },
             constraints: table =>
             {
@@ -159,14 +173,10 @@ public partial class InitialDatabase : Migration
             name: "Participations",
             columns: table => new
             {
-                BusinessId = table.Column<int>(type: "integer", nullable: false),
-                EventId = table.Column<int>(type: "integer", nullable: false),
+                BusinessId = table.Column<Guid>(type: "uuid", nullable: false),
+                EventId = table.Column<Guid>(type: "uuid", nullable: false),
                 JoinDate = table.Column<DateOnly>(type: "date", nullable: false),
-                Status = table.Column<int>(type: "integer", nullable: false),
-                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                CreatedBy = table.Column<string>(type: "text", nullable: false),
-                UpdatedBy = table.Column<string>(type: "text", nullable: true)
+                Status = table.Column<int>(type: "integer", nullable: false)
             },
             constraints: table =>
             {
@@ -189,8 +199,8 @@ public partial class InitialDatabase : Migration
             name: "Sectors",
             columns: table => new
             {
-                BusinessId = table.Column<int>(type: "integer", nullable: false),
-                IndustryId = table.Column<int>(type: "integer", nullable: false)
+                BusinessId = table.Column<Guid>(type: "uuid", nullable: false),
+                IndustryId = table.Column<Guid>(type: "uuid", nullable: false)
             },
             constraints: table =>
             {
@@ -213,19 +223,14 @@ public partial class InitialDatabase : Migration
             name: "Verifications",
             columns: table => new
             {
-                Id = table.Column<int>(type: "integer", nullable: false)
-                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
                 BusinessLicense = table.Column<string>(type: "varchar(50)", nullable: false),
                 EstablishmentCertificate = table.Column<string>(type: "varchar(50)", nullable: false),
                 Note = table.Column<string>(type: "text", nullable: true),
                 IsChecked = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                BusinessId = table.Column<int>(type: "integer", nullable: false),
+                BusinessId = table.Column<Guid>(type: "uuid", nullable: false),
                 CheckedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                BusinessType = table.Column<int>(type: "integer", nullable: false),
-                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                CreatedBy = table.Column<string>(type: "text", nullable: false),
-                UpdatedBy = table.Column<string>(type: "text", nullable: true)
+                BusinessType = table.Column<int>(type: "integer", nullable: false)
             },
             constraints: table =>
             {
@@ -268,6 +273,11 @@ public partial class InitialDatabase : Migration
             unique: true);
 
         migrationBuilder.CreateIndex(
+            name: "IX_EventIndustries_IndustryId",
+            table: "EventIndustries",
+            column: "IndustryId");
+
+        migrationBuilder.CreateIndex(
             name: "IX_Images_BusinessId",
             table: "Images",
             column: "BusinessId");
@@ -293,6 +303,9 @@ public partial class InitialDatabase : Migration
     {
         migrationBuilder.DropTable(
             name: "Branches");
+
+        migrationBuilder.DropTable(
+            name: "EventIndustries");
 
         migrationBuilder.DropTable(
             name: "Images");

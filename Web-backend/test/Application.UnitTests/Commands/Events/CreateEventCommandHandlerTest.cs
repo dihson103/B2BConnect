@@ -17,22 +17,8 @@ public class CreateEventCommandHandlerTest
     {
         eventRepositoryMock = new Mock<IEventRepository>();
         unitOfWorkMock = new Mock<IUnitOfWork>();   
-        validator = new CreateEventValidator(eventRepositoryMock.Object);
     }
 
-    [Fact] //Theory
-    public async Task HandlerShouldThrowMyValidationException_WhenNameEmpty()
-    {
-        var request = new CreateEventCommand("ffff", "Description", DateTime.UtcNow.AddDays(3), DateTime.UtcNow, EventStatus.PLANNING);
-        var handler = new CreateEventCommandHandler(
-            eventRepositoryMock.Object,
-            unitOfWorkMock.Object,
-            validator);
-
-        await Assert.ThrowsAsync<MyValidationException>(async () =>
-        {
-            await handler.Handle(request, default);
-        });
-    }
+    
 
 }

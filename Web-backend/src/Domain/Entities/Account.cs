@@ -2,7 +2,7 @@
 using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
-public class Account : EntityBase<int>
+public class Account : EntityBase<Guid>
 {
     public string Email { get; set; }
     public string Password { get; set; }

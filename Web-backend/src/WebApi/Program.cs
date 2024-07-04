@@ -2,6 +2,7 @@ using Application;
 using Carter;
 using Infrastructure;
 using Persistence;
+using WebApi.InitialData;
 using WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,5 +37,14 @@ app.UseCors("corspolicy");
 app.UseHttpsRedirection();
 
 app.MapCarter();
+
+try
+{
+    DbInitializer.InitDb(app);
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString());
+}
 
 app.Run();

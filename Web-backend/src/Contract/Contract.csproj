@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\Industry\Share\" />
     <Folder Include="Services\Tests\NewFolder\" />
   </ItemGroup>
 

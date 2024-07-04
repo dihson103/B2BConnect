@@ -1,7 +1,7 @@
 ﻿using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
-public class Representative : EntityBase<int>
+public class Representative : EntityBase<Guid>
 {
     public string GovernmentId { get; set; }
     public string Fullname { get; set; }

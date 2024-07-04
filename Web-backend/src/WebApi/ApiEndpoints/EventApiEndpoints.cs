@@ -26,7 +26,7 @@ public class EventApiEndpoints : CarterModule
         });
 
         //api/e/1
-        app.MapGet("{id}", async (ISender sender, [FromRoute] int id) =>
+        app.MapGet("{id}", async (ISender sender, [FromRoute] Guid id) =>
         {
             var result = await sender.Send(new GetByIdQuery(id));
 
