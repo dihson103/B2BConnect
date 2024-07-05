@@ -10,10 +10,10 @@ import {
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { ModeToggle } from '@/components/mode-toggle'
-import AppSideBar from '@/app/admin/components/side-bar'
-import AppBreadcrumb from '@/app/admin/components/breadcrumb'
+import AppSideBar from '@/app/admin/_components/side-bar'
+import AppBreadcrumb from '@/app/admin/_components/breadcrumb'
 import { Metadata } from 'next'
-import AppSideBarMobile from '@/app/admin/components/side-bar-mobile'
+import AppSideBarMobile from '@/app/admin/_components/side-bar-mobile'
 
 export const metadata: Metadata = {
   title: 'Trang quản lý',

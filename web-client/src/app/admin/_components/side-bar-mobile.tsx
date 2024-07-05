@@ -2,7 +2,7 @@ import { Bell, CalendarCheck, Home, LineChart, Package, Package2, PanelLeft, Use
 import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import AppSideMobileLink from '@/app/admin/components/side-mobile-link'
+import AppSideMobileLink from '@/app/admin/_components/side-mobile-link'
 
 export default function AppSideBarMobile() {
   return (

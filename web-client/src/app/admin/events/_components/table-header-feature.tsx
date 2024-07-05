@@ -1,15 +1,46 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { File, PlusCircle, Search } from 'lucide-react'
+import { File, Search } from 'lucide-react'
 import { SearchEventOption } from '@/types/event.types'
 import CreateEventForm from '@/app/admin/events/_components/create-event-form'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { ChangeEvent, useState } from 'react'
 
 type Props = {
-  searchParams: SearchEventOption
+  searchOptions: SearchEventOption
 }
 
-export default function EventTableHeader({ searchParams }: Props) {
+export default function EventTableHeader({ searchOptions }: Props) {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const [searchTearm, setSearchTearm] = useState(searchOptions.searchTearm ?? '')
+  const [status, setStatus] = useState<number>(searchOptions.status ?? 0)
+
+  const searchTearmChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTearm(event.target.value)
+    handleSearch('searchTearm', event.target.value)()
+  }
+
+  const statusChange = (value: string) => {
+    setStatus(Number(value))
+    handleSearch('status', value)()
+  }
+
+  const handleSearch = (name: string, term: string) => () => {
+    const params = new URLSearchParams(searchParams)
+    if (term) {
+      params.set(name, term)
+    } else {
+      params.delete(name)
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
   return (
     <div className='flex items-center'>
       <div className='flex items-center gap-2'>
@@ -17,27 +48,21 @@ export default function EventTableHeader({ searchParams }: Props) {
           <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
           <Input
             type='search'
-            placeholder='Search...'
+            defaultValue={searchTearm}
+            onChange={searchTearmChange}
+            placeholder='Tìm kiếm sự kiện'
             className='w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]'
           />
         </div>
-        <Select>
+        <Select value={status.toString()} onValueChange={(value) => statusChange(value)}>
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Vai trò' />
+            <SelectValue placeholder='Trạng thái sự kiện' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='1'>Chủ</SelectItem>
-            <SelectItem value='2'>Quản lý điểm danh</SelectItem>
-            <SelectItem value='3'>Quản lý đếm hàng</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Trạng thái' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='true'>Đang làm</SelectItem>
-            <SelectItem value='false'>Đã nghỉ</SelectItem>
+            <SelectItem value='0'>Sắp diễn ra</SelectItem>
+            <SelectItem value='1'>Đang diễn ra</SelectItem>
+            <SelectItem value='2'>Đã kết thúc</SelectItem>
+            <SelectItem value='3'>Đã bị hủy</SelectItem>
           </SelectContent>
         </Select>
       </div>

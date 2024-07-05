@@ -12,7 +12,7 @@ type Props = {
 
 export default async function EventPage({ searchParams }: Props) {
   const response = await searchEventAction(searchParams)
-  const events: Event[] = response.data.data ?? []
+  const events: Event[] = response.data?.data ?? []
   return (
     <Tabs defaultValue='all'>
       <TabsContent value='all'>
@@ -21,7 +21,7 @@ export default async function EventPage({ searchParams }: Props) {
             <CardTitle className='text-center font-bold text-3xl'>Quản lý sự kiện</CardTitle>
           </CardHeader>
           <CardContent>
-            <EventTableHeader searchParams={searchParams} />
+            <EventTableHeader searchOptions={searchParams} />
             {events != null && events.length > 0 ? (
               <AppEventTable data={events} />
             ) : (
