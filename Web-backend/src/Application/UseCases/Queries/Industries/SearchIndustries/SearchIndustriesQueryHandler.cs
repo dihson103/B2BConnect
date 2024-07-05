@@ -2,6 +2,7 @@
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
 using Contract.Services.Industry.SearchIndustries;
+using Contract.Services.Industry.Share;
 
 namespace Application.UseCases.Queries.Industries.SearchIndustries;
 internal sealed class SearchIndustriesQueryHandler(IIndustryRepository _industryRepository)

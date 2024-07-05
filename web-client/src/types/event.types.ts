@@ -1,7 +1,7 @@
 import { SearchResponse } from '@/types/util.types'
 
 export type Event = {
-  id: number
+  id: string
   name: string
   startAt: string
   endAt: string
@@ -16,7 +16,7 @@ export type SearchEvent = SearchResponse<Event[] | null>
 
 export type SearchEventOption = {
   searchTearm: string | null
-  isActive: number
+  status: number
   pageIndex: number
   pageSize: number
 }
@@ -29,4 +29,8 @@ export type CreateEventType = {
   image: string
   description: string
   industryIds: string[]
+}
+
+export type UpdateEventType = CreateEventType & {
+  status: number
 }
