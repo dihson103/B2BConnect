@@ -1,4 +1,5 @@
 ﻿using Carter;
+using Contract.Services.Industry.GetIndustriesOfEvent;
 using Contract.Services.Industry.SearchIndustries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,16 @@ public class IndustryApiEndpoints : CarterModule
         {
             var searchIndustriesQuery = new SearchIndustriesQuery(searchTerm);
             var result = await sender.Send(searchIndustriesQuery);
+
+            return Results.Ok(result);
+        }).WithOpenApi(x => new OpenApiOperation(x)
+        {
+            Tags = new List<OpenApiTag> { new() { Name = "Industries api" } }
+        });
+
+        app.MapGet("{id}/event", async (ISender sender, [FromRoute] Guid id) =>
+        {
+            var result = await sender.Send(new GetIndustriesByEventIdQuery(id));
 
             return Results.Ok(result);
         }).WithOpenApi(x => new OpenApiOperation(x)

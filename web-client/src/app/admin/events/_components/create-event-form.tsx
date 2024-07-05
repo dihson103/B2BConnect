@@ -25,7 +25,7 @@ import { Badge } from '@/components/ui/badge'
 import IndustryComboboxPopover from '@/components/combobox-industry-popover'
 import { IndustryResponse } from '@/types/industry.types'
 import { uploadFileAction } from '@/actions/file.action'
-import { apiErrorHandler } from '@/lib/utils'
+import { apiErrorHandler, apiResultHandler } from '@/lib/utils'
 import { useToast } from '@/components/ui/use-toast'
 import { CreateEventType } from '@/types/event.types'
 import { createEventAction } from '@/actions/event.actions'
@@ -90,12 +90,7 @@ export default function CreateEventForm() {
       }
 
       const res = await createEventAction(body)
-
-      toast({
-        title: 'Success',
-        description: res.message,
-        duration: 5000
-      })
+      apiResultHandler(res)
 
       form.reset()
       setImage(null)

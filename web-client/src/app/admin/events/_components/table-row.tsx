@@ -29,7 +29,7 @@ export default function EventTableRow({ data }: Props) {
       <TableCell className='hidden md:table-cell'>{data.startAt}</TableCell>
       <TableCell className='hidden md:table-cell'>{data.endAt}</TableCell>
       <TableCell>
-        <UpdateEventForm data={data} />
+        <UpdateEventForm key={data.id} data={data} />
       </TableCell>
     </TableRow>
   )

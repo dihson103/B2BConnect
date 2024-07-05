@@ -1,4 +1,4 @@
-import AppSideBarButton from '@/app/admin/components/side-button'
+import AppSideBarButton from '@/app/admin/_components/side-button'
 import { CalendarCheck, Home, LineChart, Package, Package2, Settings, Users2 } from 'lucide-react'
 import Link from 'next/link'
 

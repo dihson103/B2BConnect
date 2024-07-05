@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 internal class EventIndustryRepository : IEventIndustryRepository
@@ -14,5 +15,14 @@ internal class EventIndustryRepository : IEventIndustryRepository
     public void AddRange(List<EventIndustry> eventIndustries)
     {
         _context.EventIndustries.AddRange(eventIndustries);
+    }
+
+    public async Task<List<EventIndustry>> GetByEventIdAsync(Guid eventId)
+    {
+        return await _context.EventIndustries
+            .Include(x => x.Industry)
+            .AsNoTracking()
+            .Where(x => x.EventId == eventId)
+            .ToListAsync();
     }
 }

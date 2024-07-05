@@ -3,6 +3,7 @@ type ApiResponse<TError, TData> = {
   message: string
   error: TError
   data: TData
+  isSuccess: boolean
 }
 
 export type ApiSuccessResponse<TData> = ApiResponse<null, TData>

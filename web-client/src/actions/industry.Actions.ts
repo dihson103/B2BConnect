@@ -10,3 +10,8 @@ export const getIndustriesAction = (searchTerm: string) => {
   )
   return response
 }
+
+export const getIndustriesByEventIdAction = (id: string) => {
+  const response = http.get<ApiSuccessResponse<IndustryResponse[] | null>>(`/industries/${id}/event`)
+  return response
+}
