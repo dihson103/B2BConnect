@@ -49,4 +49,9 @@ public class Event : EntityBase<Guid>
         Image = request.Image;
         EventIndustries = newEventIndustries;
     }
+
+    public void UpdateStatus(EventStatus status)
+    {
+        Status = status;
+    }
 }

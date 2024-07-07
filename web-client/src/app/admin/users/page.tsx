@@ -1,5 +1,5 @@
-import UserTableHeader from '@/app/admin/users/components/table-header-feature'
-import AppUserTable from '@/app/admin/users/components/table-users'
+import UserTableHeader from '@/app/admin/users/_components/table-header-feature'
+import AppUserTable from '@/app/admin/users/_components/table-users'
 import AppPagination from '@/components/table-pagination'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent } from '@/components/ui/tabs'

@@ -1,4 +1,4 @@
-import UserTableRow from '@/app/admin/users/components/table-row'
+import UserTableRow from '@/app/admin/users/_components/table-row'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { User } from '@/types/user.types'
 
