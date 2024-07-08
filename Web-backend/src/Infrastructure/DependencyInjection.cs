@@ -12,6 +12,7 @@ public static class DependencyInjection
        IConfiguration configuration)
     {
         services.AddScoped<IPasswordService, PasswordService>();
+        services.AddSingleton<IJwtService>(new JwtService(configuration));
 
         services.AddStackExchangeRedisCache(options =>
         {
