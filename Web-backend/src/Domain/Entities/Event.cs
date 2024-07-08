@@ -19,6 +19,11 @@ public class Event : EntityBase<Guid>
     {
     }
 
+    public static Event Create()
+    {
+        return new();
+    }
+
     public static Event Create(CreateEventCommand request)
     {
         return new Event()
