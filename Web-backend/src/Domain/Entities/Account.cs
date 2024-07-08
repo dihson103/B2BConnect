@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 using Contract.Services.Account.Create;
 using Domain.Abstractioins.Enities;
 
@@ -14,15 +15,15 @@ public class Account : EntityBase<Guid>
     {
     }
 
-    public static Account Create(CreateAccountCommand request)
+    public static Account Create(string email, string hashPassword)
     {
         return new Account
         {
             Id = Guid.NewGuid(),
-            Email = request.Email,
+            Email = email,
             IsActive = true,
             IsAdmin = false,
-            // Password = hashPassword,
+            Password = hashPassword,
         };
     }
 
