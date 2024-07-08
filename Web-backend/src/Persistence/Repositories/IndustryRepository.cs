@@ -19,6 +19,11 @@ internal class IndustryRepository : IIndustryRepository
 
     public async Task<bool> IsAllIndustryIdsExistAsync(List<Guid> industryIds)
     {
+        if (industryIds is null || industryIds.Count == 0)
+        {
+            return false;
+        }
+
         var numberIndustry = await _context.Industries.CountAsync(i => industryIds.Contains(i.Id));
 
         return numberIndustry == industryIds.Count();

@@ -11,7 +11,7 @@ public static class DependencyInjection
        this IServiceCollection services,
        IConfiguration configuration)
     {
-        services.AddScoped<IPasswordService, PasswordService>();
+        services.AddSingleton<IPasswordService, PasswordService>();
 
         services.AddStackExchangeRedisCache(options =>
         {
@@ -20,7 +20,8 @@ public static class DependencyInjection
 
         });
         services.AddScoped<IRedisService, RedisService>();
-        services.AddScoped<IFileService, FileService>();
+        services.AddSingleton<IFileService, FileService>();
+        services.AddSingleton<IEmailService, EmailService>();
 
         return services;
     }
