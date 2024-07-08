@@ -23,7 +23,7 @@ public class UpdateEventValidator : AbstractValidator<UpdateEventRequest>
 
         RuleFor(req => req.EndAt)
             .Must((req, endDate) => endDate > req.StartAt)
-            .WithMessage("Ngày bắt đầu phải sau ngày hiện tại");
+            .WithMessage("Ngày kết thúc phải sau ngày bắt đầu");
 
         RuleFor(req => req.IndustryIds)
             .Must((industryIds) => industryIds != null && industryIds.Count() > 0)

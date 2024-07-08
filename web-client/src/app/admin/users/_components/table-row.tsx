@@ -1,4 +1,4 @@
-import UserTableRowAction from '@/app/admin/users/components/table-row-action'
+import UserTableRowAction from '@/app/admin/users/_components/table-row-action'
 import { Badge } from '@/components/ui/badge'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { User } from '@/types/user.types'
