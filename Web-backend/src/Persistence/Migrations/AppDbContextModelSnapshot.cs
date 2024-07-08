@@ -128,9 +128,6 @@ namespace Persistence.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
-                    b.HasIndex("RepresentativeId")
-                        .IsUnique();
-
                     b.HasIndex("TaxCode")
                         .IsUnique();
 
@@ -253,6 +250,9 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date");
 
@@ -270,6 +270,9 @@ namespace Persistence.Migrations
                         .HasColumnType("varchar(12)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BusinessId")
+                        .IsUnique();
 
                     b.ToTable("Representatives");
                 });
@@ -346,13 +349,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Representative", "Representative")
-                        .WithOne("Business")
-                        .HasForeignKey("Domain.Entities.Business", "RepresentativeId");
-
                     b.Navigation("Account");
-
-                    b.Navigation("Representative");
                 });
 
             modelBuilder.Entity("Domain.Entities.EventIndustry", b =>
@@ -404,6 +401,17 @@ namespace Persistence.Migrations
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Representative", b =>
+                {
+                    b.HasOne("Domain.Entities.Business", "Business")
+                        .WithOne("Representative")
+                        .HasForeignKey("Domain.Entities.Representative", "BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Business");
+                });
+
             modelBuilder.Entity("Domain.Entities.Sector", b =>
                 {
                     b.HasOne("Domain.Entities.Business", "Business")
@@ -448,6 +456,8 @@ namespace Persistence.Migrations
 
                     b.Navigation("Participations");
 
+                    b.Navigation("Representative");
+
                     b.Navigation("Sectors");
                 });
 
@@ -463,12 +473,6 @@ namespace Persistence.Migrations
                     b.Navigation("EventIndustries");
 
                     b.Navigation("Sectors");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Representative", b =>
-                {
-                    b.Navigation("Business")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

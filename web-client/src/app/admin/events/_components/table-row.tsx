@@ -21,7 +21,9 @@ export default function EventTableRow({ data }: Props) {
           width='30'
         />
       </TableCell>
-      <TableCell className='font-medium'>{data.name}</TableCell>
+      <TableCell className='font-medium' width={250}>
+        {data.name}
+      </TableCell>
       <TableCell>
         <Badge variant='outline'>{data.statusDescription}</Badge>
       </TableCell>

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Tracing;
-using Application.Abstractions.Data;
+﻿using Application.Abstractions.Data;
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
 using Contract.Services.Event.Create;

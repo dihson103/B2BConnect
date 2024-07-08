@@ -1,4 +1,6 @@
-﻿using Domain.Abstractioins.Enities;
+﻿using Contract.Services.Branch.Create;
+using Contract.Services.Branch.Update;
+using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
 public class Branch : EntityBase<Guid>
@@ -11,5 +13,25 @@ public class Branch : EntityBase<Guid>
     public Business Business { get; set; }
     private Branch()
     {
+    }
+
+    public static Branch Create(CreateBranchCommand branch)
+    {
+        return new Branch()
+        {
+            Email = branch.Email,
+            Phone = branch.Phone,
+            Address = branch.Address,
+            IsMainBranch = branch.IsMainBranch,
+            BusinessId = branch.BusinessId
+        };
+    }
+
+    public void Update(UpdateBranchRequest branchRequest)
+    {
+        Email = branchRequest.Email;
+        Phone = branchRequest.Phone;
+        Address = branchRequest.Address;
+        IsMainBranch = !branchRequest.IsMainBranch;
     }
 }
