@@ -11,7 +11,8 @@ public static class DependencyInjection
        this IServiceCollection services,
        IConfiguration configuration)
     {
-        services.AddSingleton<IPasswordService, PasswordService>();
+        services.AddScoped<IPasswordService, PasswordService>();
+        services.AddSingleton<IJwtService>(new JwtService(configuration));
 
         services.AddStackExchangeRedisCache(options =>
         {

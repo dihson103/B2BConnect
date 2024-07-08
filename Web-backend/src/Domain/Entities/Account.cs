@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
+using Contract.Services.Account.Create;
 using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
@@ -12,4 +14,17 @@ public class Account : EntityBase<Guid>
     private Account()
     {
     }
+
+    public static Account Create(string email, string hashPassword)
+    {
+        return new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = email,
+            IsActive = true,
+            IsAdmin = false,
+            Password = hashPassword,
+        };
+    }
+
 }
