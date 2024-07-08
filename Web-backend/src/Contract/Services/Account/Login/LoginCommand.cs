@@ -1,5 +1,5 @@
 using Contract.Abstractions.Messages;
 
-namespace Contract.Services.User.Login;
+namespace Contract.Services.Account.Login;
 
-public record LoginCommand(string Id, string Password) : ICommand<LoginResponse>;
+public record LoginCommand(string Email, string Password) : ICommand<LoginResponse>;
