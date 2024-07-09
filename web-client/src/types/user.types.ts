@@ -20,8 +20,3 @@ export type User = {
 }
 
 export type Users = User[]
-
-export type LoginType = {
-  id: string
-  password: string
-}
