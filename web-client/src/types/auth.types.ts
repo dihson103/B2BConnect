@@ -24,3 +24,5 @@ export type RegisterType = {
 }
 
 export type RegisterSuccessResponse = ApiSuccessResponse<null>
+
+export type LogoutSuccessResponse = ApiSuccessResponse<null>
