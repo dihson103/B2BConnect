@@ -14,14 +14,18 @@ public class LoginAccountCommandHandlerTest
     private readonly Mock<IAccountRepository> _accountRepositoryMock;
     private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly Mock<IJwtService> _jwtServiceMock;
+    private readonly Mock<IRedisService> _redisServiceMock;
+
     public LoginAccountCommandHandlerTest()
     {
         _accountRepositoryMock = new Mock<IAccountRepository>();
         _passwordServiceMock = new Mock<IPasswordService>();
         _jwtServiceMock = new Mock<IJwtService>();
+        _redisServiceMock = new Mock<IRedisService>();
         _handler = new LoginAccountCommandHandler(
             _accountRepositoryMock.Object, 
             _passwordServiceMock.Object, 
+            _redisServiceMock.Object,
             _jwtServiceMock.Object);
     }
 

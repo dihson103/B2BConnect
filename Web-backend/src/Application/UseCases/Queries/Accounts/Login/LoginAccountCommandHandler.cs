@@ -15,8 +15,10 @@ namespace Application.UseCases.Queries.Accounts.Login;
 public class LoginAccountCommandHandler(
     IAccountRepository _accountRepository,
     IPasswordService _passwordService,
+    IRedisService _redisService,
     IJwtService _jwtService) : ICommandHandler<LoginCommand, LoginResponse>
 {
+    public static readonly string Redis_Prefix = "USER-";
     public async Task<Result.Success<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var account = await _accountRepository.LoginAsync(request.Email) ?? throw new MyUnauthorizedException("Sai mật khẩu hoặc password.");
@@ -29,6 +31,7 @@ public class LoginAccountCommandHandler(
         var refreshToken = _jwtService.GenerateRefreshToken();
         var accountResponse = new AccountResponse(account.Email, account.Id);
         var loginResponse = new LoginResponse(accountResponse, accessToken, refreshToken);
+        await _redisService.SetAsync<LoginResponse>($"USER-{account.Id}", loginResponse);
         return Result.Success<LoginResponse>.Get(loginResponse);
     }
 }
