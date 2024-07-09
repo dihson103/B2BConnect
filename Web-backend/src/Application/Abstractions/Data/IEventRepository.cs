@@ -9,4 +9,6 @@ public interface IEventRepository
     Task<bool> IsEventExistAsync(string name);
     Task<Event> GetByIdAsync(Guid id);
     Task<(List<Event>, int)> SearchEventsAsync(GetEventsQuery request);
+    Task<Event> GetByIdIncludeIndustriesAsync(Guid id);
+    Task<bool> IsEventValidToJoinAsync(Guid id);
 }

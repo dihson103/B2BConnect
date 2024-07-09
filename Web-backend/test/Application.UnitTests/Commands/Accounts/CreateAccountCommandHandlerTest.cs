@@ -2,7 +2,6 @@ using Application.Abstractions.Data;
 using Application.Abstractions.Services;
 using Application.UseCases.Commands.Accounts.Create;
 using Contract.Services.Account.Create;
-using Contract.Services.Account.Login;
 using Domain.Abstractioins.Exceptions;
 using FluentValidation;
 using Moq;

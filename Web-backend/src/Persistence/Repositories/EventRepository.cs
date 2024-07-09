@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Contract.Services.Event.GetEvents;
+using Contract.Services.Event.Share;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,9 +26,23 @@ internal class EventRepository : IEventRepository
             .SingleOrDefaultAsync(e => e.Id == id);
     }
 
+    public async Task<Event> GetByIdIncludeIndustriesAsync(Guid id)
+    {
+        return await _context.Events
+            .AsNoTracking()
+            .Include(e => e.EventIndustries)
+                .ThenInclude(e => e.Industry)
+            .SingleOrDefaultAsync(e => e.Id == id);
+    }
+
     public Task<bool> IsEventExistAsync(string name)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<bool> IsEventValidToJoinAsync(Guid id)
+    {
+        return await _context.Events.AnyAsync(e => e.Id == id && e.Status == EventStatus.PLANNING);
     }
 
     public async Task<(List<Event>, int)> SearchEventsAsync(GetEventsQuery request)

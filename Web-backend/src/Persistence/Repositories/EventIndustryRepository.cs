@@ -25,4 +25,9 @@ internal class EventIndustryRepository : IEventIndustryRepository
             .Where(x => x.EventId == eventId)
             .ToListAsync();
     }
+
+    public async Task<bool> IsInEventIndustriesAsync(List<Guid> industryIds, Guid eventId)
+    {
+        return await _context.EventIndustries.AnyAsync(e => industryIds.Contains(e.IndustryId) && e.EventId == eventId);
+    }
 }
