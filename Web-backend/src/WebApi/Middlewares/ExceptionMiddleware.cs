@@ -21,7 +21,7 @@ public class ExceptionMiddleware
         catch (MyException excepion)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int) HttpStatusCode.OK;
+            context.Response.StatusCode = excepion.StatusCode;
 
             var error = new
             {
