@@ -6,20 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { loginAction } from '@/actions/auth.actions'
-import { LoginType } from '@/types/user.types'
 import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
 import { apiErrorHandler } from '@/lib/utils'
+import { LoginType } from '@/types/auth.types'
 
 export default function LoginForm() {
   const { toast } = useToast()
-  const [id, setId] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    const data: LoginType = {
-      id,
+  const handleLogin = () => {
+    const data = {
+      email, 
       password
     }
 
@@ -27,14 +26,14 @@ export default function LoginForm() {
       .then((data) => {
         toast({
           title: 'Login success',
-          description: 'Hello dihson103',
+          description: 'Welcome back',
           duration: 5000
         })
       })
       .catch((error: Error) => {
         apiErrorHandler(error.message)
-      })
-  }
+      })  
+    }
 
   return (
     <div className='flex min-h-screen items-center justify-center'>
@@ -43,7 +42,7 @@ export default function LoginForm() {
           <CardTitle className='text-2xl'>Đăng nhập</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className='grid gap-4'>
               <div className='grid gap-2'>
                 <Label htmlFor='email'>Email</Label>
@@ -51,8 +50,8 @@ export default function LoginForm() {
                   id='email'
                   type='text'
                   placeholder='m@example.com'
-                  value={id}
-                  onChange={(e) => setId(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -68,7 +67,7 @@ export default function LoginForm() {
                   required
                 />
               </div>
-              <Button type='submit' className='w-full'>
+              <Button type='button' className='w-full' onClick={handleLogin}>
                 Đăng nhập
               </Button>
             </div>
