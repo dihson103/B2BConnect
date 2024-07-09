@@ -85,6 +85,11 @@ public class AppDbContext : DbContext, IUnitOfWork
             entity.Property(e => e.CoverImage).HasColumnType("varchar(50)");
         });
 
+        modelBuilder.Entity<Business>()
+        .HasOne(b => b.Representative)
+        .WithOne(r => r.Business)
+        .HasForeignKey<Representative>(r => r.BusinessId);
+
         modelBuilder.Entity<Image>(entity =>
         {
             entity.Property(e => e.Value).HasColumnType("varchar(50)");
