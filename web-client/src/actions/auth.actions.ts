@@ -5,7 +5,21 @@ import { cookies } from 'next/headers'
 import { LoginSuccessResponse, LoginType, RegisterSuccessResponse, RegisterType } from '@/types/auth.types'
 
 export const loginAction = async (body: LoginType) => {
-  const response = await http.post<LoginSuccessResponse>('/auth/login', body)
+  let response;
+  try {
+    response = await http.post<LoginSuccessResponse>('/auth/login', body)
+    if (response.status === 200 && response.data) {
+      cookies().set('userId', response.data.account.id);
+      cookies().set('email', response.data.account.email);
+      cookies().set('accessToken', response.data.accessToken);
+      cookies().set('refreshToken', response.data.refreshToken);
+    } else {
+      throw new Error('Login failed: Unexpected response');
+    }
+  } catch (error) {
+    console.error('Login request failed:', error);
+    throw error;
+}
   // set cookie 
   cookies().set('userId', response.data.account.id)
   cookies().set('email', response.data.account.email)
