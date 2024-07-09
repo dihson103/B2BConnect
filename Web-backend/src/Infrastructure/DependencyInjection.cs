@@ -1,5 +1,8 @@
-﻿using Application.Abstractions.Services;
+﻿using System.Text;
+using Application.Abstractions.Services;
+using Infrastructure.Options;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +26,23 @@ public static class DependencyInjection
         services.AddScoped<IRedisService, RedisService>();
         services.AddSingleton<IFileService, FileService>();
         services.AddSingleton<IEmailService, EmailService>();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                var jwtOptions = configuration.GetSection("jwtOption").Get<JwtOptions>();
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions?.Issuer,
+                    ValidAudience = jwtOptions?.Audience,
+                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtOptions!.SecretKey))
+                };
+            });
+        services.AddAuthorization();
 
         return services;
     }
