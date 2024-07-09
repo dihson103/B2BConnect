@@ -13,7 +13,8 @@ export type LoginResponse = {
 
 export type AccountResponse = {
     email: string, 
-    id: string
+    id: string,
+    isAdmin: boolean
 }
 export type LoginSuccessResponse = ApiSuccessResponse<LoginResponse>
 
