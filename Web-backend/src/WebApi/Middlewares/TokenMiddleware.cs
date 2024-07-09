@@ -16,10 +16,9 @@ public class TokenMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var path = context.Request.Path.Value;
-        // Exclude login and create account paths
-        if (path!.Equals("/login", StringComparison.OrdinalIgnoreCase) ||
-            path.Equals("/createaccount", StringComparison.OrdinalIgnoreCase))
+        var header = context.Request.Headers["Authorization"].FirstOrDefault();
+        Console.WriteLine("header " + header);
+        if (header is null || !header.StartsWith("Bearer "))
         {
             await _next(context);
             return;
