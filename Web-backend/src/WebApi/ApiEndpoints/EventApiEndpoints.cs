@@ -2,6 +2,7 @@
 using Contract.Services.Event.Create;
 using Contract.Services.Event.GetById;
 using Contract.Services.Event.GetEvents;
+using Contract.Services.Event.RequestJoin;
 using Contract.Services.Event.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,18 @@ public class EventApiEndpoints : CarterModule
         {
             var updateEventCommand = new UpdateEventCommand(id, request);
             var result = await sender.Send(updateEventCommand);
+
+            return Results.Ok(result);
+        }).WithOpenApi(x => new OpenApiOperation(x)
+        {
+            Tags = new List<OpenApiTag> { new() { Name = "Events api" } }
+        });
+
+        app.MapPost("{id}/participation", async (ISender sender, [FromRoute] Guid id) =>
+        {
+            var businessId = Guid.Parse("494403b0-0586-400a-89b6-4764444783c2");
+            var requestJoinCommand = new RequestJoinCommand(businessId, id);
+            var result = await sender.Send(requestJoinCommand);
 
             return Results.Ok(result);
         }).WithOpenApi(x => new OpenApiOperation(x)

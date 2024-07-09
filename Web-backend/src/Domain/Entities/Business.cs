@@ -1,4 +1,5 @@
-﻿using Contract.Services.Business.Share;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Contract.Services.Business.Share;
 using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
@@ -12,6 +13,7 @@ public class Business : EntityBase<Guid>
     public string? CoverImage { get; set; }
     public NumberOfEmployee NumberOfEmployee { get; set; }
     public bool IsVerified { get; set; }
+    [ForeignKey(nameof(Account))]
     public Guid AccountId { get; set; }
     public Account Account { get; set; }    
     public Guid? RepresentativeId { get; set; }
@@ -20,7 +22,4 @@ public class Business : EntityBase<Guid>
     public List<Participation>? Participations { get; set; }
     public List<Image>? Images { get; set; }
     public List<Branch>? Branches { get; set; }
-    private Business()
-    {
-    }
 }

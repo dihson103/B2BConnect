@@ -12,4 +12,15 @@ public class Participation
     private Participation()
     {
     }
+
+    public static Participation Create(Guid businessId, Guid eventId, bool isBusinessSectorsInEventIndustries)
+    {
+        return new Participation()
+        {
+            EventId = eventId,
+            BusinessId = businessId,
+            JoinDate = DateOnly.FromDateTime(DateTime.UtcNow.AddHours(7)),
+            Status = isBusinessSectorsInEventIndustries ? ParticipationStatus.JOINED : ParticipationStatus.WAITING_FOR_APPROVAL,
+        };
+    }
 }

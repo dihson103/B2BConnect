@@ -22,6 +22,13 @@ public class BusinessRepository : IBusinessRepository
                     .SingleOrDefaultAsync(e => e.Id == id);
     }
 
+    public async Task<bool> IsBusinessValidAsync(Guid id)
+    {
+        return await _context.Businesses
+            .Include(b => b.Account)
+            .AnyAsync(b => b.Id == id && b.Account.IsActive == true);
+    }
+
     public async Task<(List<Business>?, int)> SearchBusinessAsync(GetBusinessesQuery getBusinessesQuery)
     {
         var query = _context.Businesses!.Where(b => b!.IsVerified == getBusinessesQuery.IsVerified);
