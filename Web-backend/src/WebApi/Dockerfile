@@ -8,15 +8,16 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/WebApi/WebApi.csproj", "src/WebApi/"]
-COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
-COPY ["src/Application/Application.csproj", "src/Application/"]
-COPY ["src/Contract/Contract.csproj", "src/Contract/"]
-COPY ["src/Domain/Domain.csproj", "src/Domain/"]
-COPY ["src/Persistence/Persistence.csproj", "src/Persistence/"]
-RUN dotnet restore "./src/WebApi/WebApi.csproj"
+COPY ["Web-backend/src/WebApi/WebApi.csproj", "Web-backend/src/WebApi/"]
+COPY ["Web-backend/src/Application/Application.csproj", "Web-backend/src/Application/"]
+COPY ["Web-backend/src/Contract/Contract.csproj", "Web-backendsrc/Contract/"]
+COPY ["Web-backend/src/Domain/Domain.csproj", "Web-backend/src/Domain/"]
+COPY ["Web-backend/src/Infrastructure/Infrastructure.csproj", "Web-backend/src/Infrastructure/"]
+COPY ["Web-backend/src/Persistence/Persistence.csproj", "Web-backend/src/Persistence/"]
+RUN dotnet restore "./Web-backend/src/WebApi/WebApi.csproj"
+
 COPY . .
-WORKDIR "/src/src/WebApi"
+WORKDIR "/src/Web-backend/src/WebApi"
 RUN dotnet build "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
@@ -26,4 +27,6 @@ RUN dotnet publish "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "WebApi.dll"]
+
