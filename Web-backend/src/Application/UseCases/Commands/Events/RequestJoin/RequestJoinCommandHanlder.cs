@@ -5,20 +5,20 @@ using Contract.Services.Event.RequestJoin;
 using Domain.Abstractioins.Exceptions;
 using Domain.Entities;
 
-namespace Application.UseCases.Commands.RequestJoin;
+namespace Application.UseCases.Commands.Events.RequestJoin;
 internal sealed class RequestJoinCommandHanlder(
     IEventRepository _eventRepository,
     IBusinessRepository _businessRepository,
     ISectorRepository _sectorRepository,
     IEventIndustryRepository _eventIndustryRepository,
     IParticipationRepository _participationRepository,
-    
+
     IUnitOfWork _unitOfWork) : ICommandHandler<RequestJoinCommand>
 {
     public async Task<Result.Success> Handle(RequestJoinCommand request, CancellationToken cancellationToken)
     {
         var isBusinessValid = await _businessRepository.IsBusinessValidAsync(request.BusinessId);
-        if(!isBusinessValid)
+        if (!isBusinessValid)
         {
             throw new MyNotFoundException($"Không tìm thấy công ty có id: {request.BusinessId}");
         }
@@ -36,6 +36,7 @@ internal sealed class RequestJoinCommandHanlder(
         }
 
         var sectors = await _sectorRepository.GetSectorsByBusinessIdAsync(request.BusinessId);
+        if(sectors is null || sectors.Count == 0) throw new MyNotFoundException("Không tìm thấy lĩnh vực của công ty");
         var industryIds = sectors.Select(s => s.IndustryId).ToList();
         var isBusinessSectorsInEventIndustries = await _eventIndustryRepository.IsInEventIndustriesAsync(industryIds, request.EventId);
 
