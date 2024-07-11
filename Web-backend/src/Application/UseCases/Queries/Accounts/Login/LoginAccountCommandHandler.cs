@@ -29,7 +29,7 @@ public class LoginAccountCommandHandler(
         }
         var accessToken = _jwtService.GenerateAccessToken(account);
         var refreshToken = _jwtService.GenerateRefreshToken();
-        var accountResponse = new AccountResponse(account.Email, account.Id);
+        var accountResponse = new AccountResponse(account.Email, account.Id, account.IsAdmin);
         var loginResponse = new LoginResponse(accountResponse, accessToken, refreshToken);
         await _redisService.SetAsync<LoginResponse>($"USER-{account.Id}", loginResponse);
         return Result.Success<LoginResponse>.Get(loginResponse);

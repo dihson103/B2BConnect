@@ -25,7 +25,7 @@ public class JwtService : IJwtService
         var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new Claim[]{
-            new Claim(JwtRegisteredClaimNames.Sub, account.Id.ToString()),
+            new Claim("UserId", account.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, account.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim("isAdmin", account.IsAdmin.ToString())
