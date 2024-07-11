@@ -2,30 +2,26 @@
 
 import http from '@/lib/http'
 import { cookies } from 'next/headers'
-import { LoginSuccessResponse, LoginType, RegisterSuccessResponse, RegisterType } from '@/types/auth.types'
+import { LoginResponse, LoginSuccessResponse, LoginType, RegisterSuccessResponse, RegisterType } from '@/types/auth.types'
 
 export const loginAction = async (body: LoginType) => {
   let response;
   try {
     response = await http.post<LoginSuccessResponse>('/auth/login', body)
     if (response.status === 200 && response.data) {
-      cookies().set('userId', response.data.account.id);
-      cookies().set('email', response.data.account.email);
-      cookies().set('accessToken', response.data.accessToken);
-      cookies().set('refreshToken', response.data.refreshToken);
+      cookies().set({
+        name: "loginResponse", 
+        value: JSON.stringify(response.data),
+        httpOnly: true
+      })
     } else {
       throw new Error('Login failed: Unexpected response');
     }
   } catch (error) {
-    console.error('Login request failed:', error);
-    throw error;
+    console.error('Login request failed:', error)
+    throw error
 }
-  // set cookie 
-  cookies().set('userId', response.data.account.id)
-  cookies().set('email', response.data.account.email)
-  cookies().set('accessToken', response.data.accessToken)
-  cookies().set('refreshToken', response.data.refreshToken)
-  return response;
+  return response
 }
 
 export const registerAction = (body: RegisterType) => {
@@ -33,19 +29,28 @@ export const registerAction = (body: RegisterType) => {
 }
 
 export const logoutAction = () => {
-  const userIdCookie = cookies().get('userId')
-  const userId = userIdCookie ? userIdCookie.value : null;
+  const loginResponse = getLoginResponseCookie();
+  const userId = loginResponse?.account?.id; 
   console.log('userId = ' + userId);
   if (userId) {
     http.delete<LoginSuccessResponse>(`/auth/logout/${userId}`)
     .then(response => {
-      // remove cookie
-      cookies().delete('userId')
-      cookies().delete('email')
-      cookies().delete('accessToken')
-      cookies().delete('refreshToken')
+      cookies().delete('loginResponse');
     })
   } else {
-    console.error('User ID not found in cookies');
+    console.error('User ID not found in cookies')
+  }
+}
+
+export const getLoginResponseCookie = () : LoginResponse | null => {
+  try {
+    const loginResponse =  cookies().get('loginResponse')?.value;
+    if (!loginResponse) {
+      return null;
+    }
+    return JSON.parse(loginResponse);
+  } catch (err) {
+    console.error('Error parsing loginResponse cookie:', err);
+    return null;
   }
 }
