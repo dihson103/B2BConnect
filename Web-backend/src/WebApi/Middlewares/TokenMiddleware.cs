@@ -18,7 +18,6 @@ public class TokenMiddleware
     public async Task Invoke(HttpContext context)
     {
         var header = context.Request.Headers["Authorization"].FirstOrDefault();
-        Console.WriteLine("header " + header);
         if (header is null || !header.StartsWith("Bearer "))
         {
             await _next(context);
@@ -28,7 +27,7 @@ public class TokenMiddleware
         var account = context.User;
         if (account?.Identity?.IsAuthenticated == true)
         {
-            var accountId = account?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var accountId = account?.FindFirst("UserId")?.Value;
             var redis = context.RequestServices.GetRequiredService<IRedisService>();
             var loginResponse = await redis.GetAsync<LoginResponse>(LoginAccountCommandHandler.Redis_Prefix + accountId);
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
