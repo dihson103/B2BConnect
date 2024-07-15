@@ -45,7 +45,7 @@ internal class EventRepository : IEventRepository
         return await _context.Events.AnyAsync(e => e.Id == id && e.Status == EventStatus.PLANNING);
     }
 
-    public async Task<(List<Event>, int)> SearchEventsAsync(GetEventsQuery request)
+    public async Task<(List<Event>, int, int)> SearchEventsAsync(GetEventsQuery request)
     {
         var query = _context.Events
             .Where(e => e.Status == request.Status);
@@ -68,7 +68,7 @@ internal class EventRepository : IEventRepository
             .AsNoTracking()
             .ToListAsync();
 
-        return (events, totalPages);
+        return (events, totalPages, totalItems);
     }
 
     public void Update(Event Event)

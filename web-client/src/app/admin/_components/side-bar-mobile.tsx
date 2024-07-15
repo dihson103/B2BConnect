@@ -1,4 +1,14 @@
-import { Bell, CalendarCheck, Home, LineChart, Package, Package2, PanelLeft, Users2 } from 'lucide-react'
+import {
+  Bell,
+  BriefcaseBusiness,
+  CalendarCheck,
+  Home,
+  LineChart,
+  Package,
+  Package2,
+  PanelLeft,
+  Users2
+} from 'lucide-react'
 import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -24,6 +34,9 @@ export default function AppSideBarMobile() {
           </Link>
           <AppSideMobileLink url='/admin' displayValue='Trang thống kê'>
             <Home className='h-5 w-5' />
+          </AppSideMobileLink>
+          <AppSideMobileLink url='/admin/businesses' displayValue='Quản lý doanh nghiệp'>
+            <BriefcaseBusiness className='h-5 w-5' />
           </AppSideMobileLink>
           <AppSideMobileLink url='/admin/users' displayValue='Quản lý người dùng'>
             <Users2 className='h-5 w-5' />

@@ -1,5 +1,5 @@
 import AppSideBarButton from '@/app/admin/_components/side-button'
-import { CalendarCheck, Home, LineChart, Package, Package2, Settings, Users2 } from 'lucide-react'
+import { BriefcaseBusiness, CalendarCheck, Home, LineChart, Package, Package2, Settings, Users2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AppSideBar() {
@@ -16,6 +16,9 @@ export default function AppSideBar() {
 
         <AppSideBarButton url='/admin/dashboard' displayValue='Trang thống kê'>
           <Home className='h-5 w-5' />
+        </AppSideBarButton>
+        <AppSideBarButton url='/admin/businesses' displayValue='Quản lý doanh nghiệp'>
+          <BriefcaseBusiness className='h-5 w-5' />
         </AppSideBarButton>
         <AppSideBarButton url='/admin/users' displayValue='Quản lý người dùng'>
           <Users2 className='h-5 w-5' />

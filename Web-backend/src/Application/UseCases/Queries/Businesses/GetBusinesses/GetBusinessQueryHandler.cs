@@ -18,6 +18,7 @@ public sealed class GetBusinessQueryHandler(IBusinessRepository _businessReposit
 
         var businesses = result.Item1;
         var totalPage = result.Item2;
+        var totalItems = result.Item3;
 
         if (businesses is null || businesses.Count <= 0 || totalPage <= 0)
         {
@@ -27,7 +28,7 @@ public sealed class GetBusinessQueryHandler(IBusinessRepository _businessReposit
 
         var data = businesses.ConvertAll(p => _mapper.Map<BusinessResponse>(p));
 
-        var searchResponse = new SearchResponse<List<BusinessResponse>>(request.PageIndex, totalPage, data);
+        var searchResponse = new SearchResponse<List<BusinessResponse>>(request.PageIndex, totalPage, totalItems, data);
 
         return Result.Success<SearchResponse<List<BusinessResponse>>>.Get(searchResponse);
     }

@@ -20,21 +20,21 @@ public class BusinessMappingProfile : Profile
                 src.CoverImage,
                 src.NumberOfEmployee,
                 src.IsVerified,
-                new RepresentativeResponse(
+                src.Representative != null ? new RepresentativeResponse(
                         src.Representative!.Id,
                         src.Representative.GovernmentId,
                         src.Representative.Fullname,
                         src.Representative.Dob,
                         src.Representative.Gender,
                         src.Representative.Address,
-                        src.Representative.BusinessId),
-               src.Branches!.Select(branch => new BranchResponse(
+                        src.Representative.BusinessId) : null,
+                src.Branches != null ? src.Branches!.Select(branch => new BranchResponse(
                         branch.Id,
                         branch.Email,
                          branch.Phone,
                         branch.Address,
                         branch.IsMainBranch,
-                        branch.BusinessId)).ToList()
+                        branch.BusinessId)).ToList() : null
             ));
     }
 

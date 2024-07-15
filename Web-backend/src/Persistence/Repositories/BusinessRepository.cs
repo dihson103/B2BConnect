@@ -29,7 +29,7 @@ public class BusinessRepository : IBusinessRepository
             .AnyAsync(b => b.Id == id && b.Account.IsActive == true);
     }
 
-    public async Task<(List<Business>?, int)> SearchBusinessAsync(GetBusinessesQuery getBusinessesQuery)
+    public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesQuery getBusinessesQuery)
     {
         var query = _context.Businesses!.Where(b => b!.IsVerified == getBusinessesQuery.IsVerified);
 
@@ -53,6 +53,6 @@ public class BusinessRepository : IBusinessRepository
             .AsSingleQuery()
             .ToListAsync();
 
-        return (businesses, totalPages);
+        return (businesses, totalPages, totalItems);
     }
 }

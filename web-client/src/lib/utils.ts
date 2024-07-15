@@ -18,9 +18,9 @@ export const apiErrorHandler = (error: string) => {
 
 export const apiResultHandler = (res: ApiSuccessResponse<null>) => {
   toast({
-    title: res.isSuccess ? 'Thành công' : 'Lỗi',
+    title: res.status === 200 ? 'Thành công' : 'Lỗi',
     description: res.message ?? 'Lỗi không xác định',
     duration: 5000,
-    variant: res.isSuccess ? 'default' : 'destructive'
+    variant: res.status === 200 ? 'default' : 'destructive'
   })
 }

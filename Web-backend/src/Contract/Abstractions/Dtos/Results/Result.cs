@@ -11,28 +11,24 @@ public class Result
         {
             Status = (int)HttpStatusCode.Created,
             Message = message,
-            IsSuccess = true
         };
 
         public static Success Update(string message = "Chỉnh sửa thành công") => new Success()
         {
             Status = (int)HttpStatusCode.OK,
             Message = message,
-            IsSuccess = true
         };
 
         public static Success Delete(string message = "Xóa thành công") => new Success()
         {
             Status = (int)HttpStatusCode.OK,
             Message = message,
-            IsSuccess = true
         };
 
         public static Success Logout(string message = "Đăng xuất thành công") => new Success()
         {
             Status = (int)HttpStatusCode.OK,
             Message = message,
-            IsSuccess = true
         };
     }
 
@@ -46,7 +42,6 @@ public class Result
                 Status = (int)HttpStatusCode.OK,
                 Message = message,
                 Data = tData,
-                IsSuccess = true
             };
 
         public static Success<TData> ActionCommand(TData tData, string message = "Hành động thành công")
@@ -55,7 +50,6 @@ public class Result
                 Status = (int)HttpStatusCode.OK,
                 Message = message,
                 Data = tData,
-                IsSuccess = true
             };
     }
 

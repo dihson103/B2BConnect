@@ -23,7 +23,7 @@ public sealed class GetBranchQueryHandler(IBranchRepository _branchRepository, I
 
         var data = result.ConvertAll(p => _mapper.Map<BranchResponse>(p));
 
-        var searchResponse = new SearchResponse<List<BranchResponse>>(0, 0,data);
+        var searchResponse = new SearchResponse<List<BranchResponse>>(0, 0, 0,data);
 
         return Result.Success<SearchResponse<List<BranchResponse>>>.Get(searchResponse);
     }

@@ -44,6 +44,14 @@ export const BreadcrumbValue = new Map<string, BreadcrumbType>([
       display: 'Quản lý sự kiện',
       value: 'Thêm sự kiện'
     }
+  ],
+  [
+    '/admin/businesses',
+    {
+      url: '/admin/businesses',
+      display: 'Quản lý doanh nghiệp',
+      value: 'Toàn bộ doanh nghiệp'
+    }
   ]
 ])
 

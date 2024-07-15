@@ -3,7 +3,6 @@ type ApiResponse<TError, TData> = {
   message: string
   error: TError
   data: TData
-  isSuccess: boolean
 }
 
 export type ApiSuccessResponse<TData> = ApiResponse<null, TData>
@@ -13,6 +12,9 @@ export type ApiErrorResponse = ApiResponse<any, null>
 type SearchResponseType<T> = {
   currentPage: number
   totalPages: number
+  hasNextPage: Number
+  hasPreviousPage: Number
+  totalItems: Number
   data: T
 }
 

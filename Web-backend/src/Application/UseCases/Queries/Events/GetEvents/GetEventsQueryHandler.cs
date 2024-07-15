@@ -16,6 +16,7 @@ internal sealed class GetEventsQueryHandler(IEventRepository _eventRepository, I
         var result = await _eventRepository.SearchEventsAsync(request);
         var events = result.Item1;
         var totalPages = result.Item2;
+        var totalItems = result.Item3;
 
         if (events is null || events.Count == 0)
         {
@@ -24,7 +25,7 @@ internal sealed class GetEventsQueryHandler(IEventRepository _eventRepository, I
         }
 
         var eventResponses = events.Select(e => _mapper.Map<EventResponse>(e)).ToList();
-        var searchResponse = new SearchResponse<List<EventResponse>>(request.PageIndex, totalPages, eventResponses);
+        var searchResponse = new SearchResponse<List<EventResponse>>(request.PageIndex, totalPages, totalItems, eventResponses);
         return Result.Success<SearchResponse<List<EventResponse>>>.Get(searchResponse);
 
     }
