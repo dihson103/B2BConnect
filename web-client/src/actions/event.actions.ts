@@ -27,5 +27,6 @@ export const updateEventAction = (id: string, body: UpdateEventType) => {
 export const getEventById = (id: string) => {
   const response = http.get<ApiSuccessResponse<EventDetail>>(`/events/${id}`)
   revalidatePath(`/admin/events/update/${id}`)
+  revalidatePath(`/admin/events/${id}`)
   return response
 }
