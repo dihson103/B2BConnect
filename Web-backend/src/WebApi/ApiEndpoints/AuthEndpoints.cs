@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Contract.Services.Account.Login;
 using Contract.Services.Account.Logout;
 using Contract.Services.Account.Create;
+using System.IdentityModel.Tokens.Jwt;
 
 
 namespace WebApi.ApiEndpoints;
@@ -31,7 +32,7 @@ public class AuthEndpoints : CarterModule
 
         app.MapPost("/logout/{id}", async (ISender sender, ClaimsPrincipal claim, [FromRoute] string id) =>
         {
-            var userId = claim.FindFirst("UserID")!.Value;
+            var userId = claim.FindFirst("UserId")?.Value;
             var logoutCommand = new LogoutCommand(userId, id);
             var result = await sender.Send(logoutCommand);
 

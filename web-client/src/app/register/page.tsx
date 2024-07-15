@@ -57,7 +57,7 @@ export default function RegisterPage() {
           <div className='grid gap-4'>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleRegister)}>
-                <div className='grid gap-2'>
+                <div className='grid gap-2 mt-2'>
                   <FormField 
                     control={form.control}
                     name='email'
@@ -78,7 +78,7 @@ export default function RegisterPage() {
                     )}
                   />
                 </div>
-                <div className='grid gap-2'>
+                <div className='grid gap-2 mt-2'>
                   <FormField 
                     control={form.control}
                     name='password'
@@ -93,7 +93,7 @@ export default function RegisterPage() {
                     )}
                   />
                 </div>
-                <div className='grid gap-2'>
+                <div className='grid gap-2 mt-2'>
                   <FormField 
                     control={form.control}
                     name='retypedPassword'
@@ -108,7 +108,7 @@ export default function RegisterPage() {
                     )}
                   />
                 </div>
-                <Button type='submit' className='w-full'>
+                <Button type='submit' className='mt-4 w-full'>
                   Tạo tài khoản ngay
                 </Button>
               </form>

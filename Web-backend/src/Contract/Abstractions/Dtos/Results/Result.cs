@@ -27,6 +27,13 @@ public class Result
             Message = message,
             IsSuccess = true
         };
+
+        public static Success Logout(string message = "Đăng xuất thành công") => new Success()
+        {
+            Status = (int)HttpStatusCode.OK,
+            Message = message,
+            IsSuccess = true
+        };
     }
 
     public class Success<TData> : IResult

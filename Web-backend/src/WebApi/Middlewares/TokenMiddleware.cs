@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using Application.Abstractions.Services;
 using Application.UseCases.Queries.Accounts.Login;
@@ -17,7 +18,6 @@ public class TokenMiddleware
     public async Task Invoke(HttpContext context)
     {
         var header = context.Request.Headers["Authorization"].FirstOrDefault();
-        Console.WriteLine("header " + header);
         if (header is null || !header.StartsWith("Bearer "))
         {
             await _next(context);
@@ -26,12 +26,8 @@ public class TokenMiddleware
 
         var account = context.User;
         if (account?.Identity?.IsAuthenticated == true)
-        foreach (var claim in account.Claims)
         {
-            Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-        }
-        {
-            var accountId = account?.FindFirst("Id")?.Value;
+            var accountId = account?.FindFirst("UserId")?.Value;
             var redis = context.RequestServices.GetRequiredService<IRedisService>();
             var loginResponse = await redis.GetAsync<LoginResponse>(LoginAccountCommandHandler.Redis_Prefix + accountId);
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
