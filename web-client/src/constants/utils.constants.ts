@@ -22,11 +22,33 @@ export const BreadcrumbValue = new Map<string, BreadcrumbType>([
     }
   ],
   [
+    '/admin/events/update',
+    {
+      url: '/admin/events',
+      display: 'Quản lý sự kiện',
+      value: 'Chỉnh sửa sự kiện'
+    }
+  ],
+  [
     '/admin/events',
     {
       url: '/admin/events',
       display: 'Quản lý sự kiện',
       value: 'Toàn bộ sự kiện'
     }
+  ],
+  [
+    '/admin/events/create',
+    {
+      url: '/admin/events/create',
+      display: 'Quản lý sự kiện',
+      value: 'Thêm sự kiện'
+    }
   ]
 ])
+
+export const GetMapPathName = (value: string) => {
+  const keys = Array.from(BreadcrumbValue.keys())
+  const pathName = keys.find((key) => value.includes(key))
+  return pathName
+}

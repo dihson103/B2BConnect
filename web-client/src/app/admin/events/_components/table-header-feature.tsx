@@ -1,13 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { File, Search } from 'lucide-react'
 import { SearchEventOption } from '@/types/event.types'
-import CreateEventForm from '@/app/admin/events/_components/create-event-form'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useState } from 'react'
+import CreateEventButton from '@/app/admin/events/_components/create-event-button'
 
 type Props = {
   searchOptions: SearchEventOption
@@ -72,7 +71,7 @@ export default function EventTableHeader({ searchOptions }: Props) {
           <File className='h-3.5 w-3.5' />
           <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>Export</span>
         </Button> */}
-        <CreateEventForm />
+        <CreateEventButton />
       </div>
     </div>
   )

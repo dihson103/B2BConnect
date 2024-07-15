@@ -1,3 +1,4 @@
+import { IndustryResponse } from '@/types/industry.types'
 import { SearchResponse } from '@/types/util.types'
 
 export type Event = {
@@ -33,4 +34,8 @@ export type CreateEventType = {
 
 export type UpdateEventType = CreateEventType & {
   status: number
+}
+
+export type EventDetail = Event & {
+  industries: IndustryResponse[]
 }

@@ -2,8 +2,8 @@ import { Event } from '@/types/event.types'
 import { Badge } from '@/components/ui/badge'
 import { TableCell, TableRow } from '@/components/ui/table'
 import Image from 'next/image'
-import UpdateEventForm from '@/app/admin/events/_components/update-event-form'
 import envConfig from '@/config'
+import EventTableRowAction from '@/app/admin/events/_components/table-row-action'
 
 type Props = {
   data: Event
@@ -31,7 +31,7 @@ export default function EventTableRow({ data }: Props) {
       <TableCell className='hidden md:table-cell'>{data.startAt}</TableCell>
       <TableCell className='hidden md:table-cell'>{data.endAt}</TableCell>
       <TableCell>
-        <UpdateEventForm key={data.id} data={data} />
+        <EventTableRowAction id={data.id} />
       </TableCell>
     </TableRow>
   )

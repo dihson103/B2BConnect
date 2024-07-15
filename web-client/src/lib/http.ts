@@ -45,7 +45,8 @@ const request = async <Response>(
 
   if (!res.ok) {
     var error = payload as ApiErrorResponse
-    throw new Error(error.message)
+    const message = `${error.status}|${error.message}`
+    throw new Error(message)
   }
 
   return payload
