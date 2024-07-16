@@ -2,8 +2,8 @@ import { Badge } from '@/components/ui/badge'
 import { TableCell, TableRow } from '@/components/ui/table'
 import Image from 'next/image'
 import envConfig from '@/config'
-import EventTableRowAction from '@/app/admin/events/_components/table-row-action'
 import { BusinessResponse } from '@/types/business.types'
+import BusinessTableRowAction from '@/app/admin/businesses/_components/table-row-action'
 
 type Props = {
   data: BusinessResponse
@@ -31,7 +31,7 @@ export default function BusinessTableRow({ data }: Props) {
         </Badge>
       </TableCell>
       <TableCell>
-        <EventTableRowAction id={data.id} />
+        <BusinessTableRowAction id={data.id} />
       </TableCell>
     </TableRow>
   )
