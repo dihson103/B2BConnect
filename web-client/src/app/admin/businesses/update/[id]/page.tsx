@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import BranchTableRowAction from '@/app/admin/businesses/update/_components/button-action'
 import { useState } from 'react'
 import ImageDisplay from '@/components/image-choosed-display'
+import CreateBranchForm from '@/app/admin/businesses/_components/create-branch-form'
 
 export default function UpdateBusinessPage() {
   const [avatarImage, setAvatarImage] = useState<File | null>(null)
@@ -234,7 +235,7 @@ export default function UpdateBusinessPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='w-[200px]'>Địa chỉ</TableHead>
+                  <TableHead>Địa chỉ</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Số điện thoại</TableHead>
                   <TableHead>Loại trụ sở</TableHead>
@@ -284,10 +285,7 @@ export default function UpdateBusinessPage() {
             </Table>
           </CardContent>
           <CardFooter className='justify-center border-t p-4'>
-            <Button size='sm' variant='ghost' className='gap-1'>
-              <PlusCircle className='h-3.5 w-3.5' />
-              Add Variant
-            </Button>
+            <CreateBranchForm />
           </CardFooter>
         </Card>
         <div className='flex items-center justify-center gap-2 md:hidden'>
