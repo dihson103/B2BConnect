@@ -3,6 +3,6 @@ using Contract.Services.Representative.Share;
 
 namespace Contract.Services.Business.Share;
 public record BusinessResponse(Guid Id,string TaxCode, string Name, 
-    DateOnly DateOfEstablishmen, string? WebSite, string? AvatarImage
+    DateOnly DateOfEstablishment, string? WebSite, string? AvatarImage
     , string? CoverImage, NumberOfEmployee NumberOfEmployee, bool IsVerified,
     RepresentativeResponse RepresentativeResponse, List<BranchResponse> BranchResponses);

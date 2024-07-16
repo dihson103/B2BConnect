@@ -30,6 +30,7 @@ export default function BusinessTableRow({ data }: Props) {
           {data.numberOfEmployee}
         </Badge>
       </TableCell>
+      <TableCell>{data.dateOfEstablishment}</TableCell>
       <TableCell>
         <BusinessTableRowAction id={data.id} />
       </TableCell>

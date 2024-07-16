@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useState } from 'react'
-import CreateEventButton from '@/app/admin/events/_components/create-event-button'
 import { SearchBusinessOption } from '@/types/business.types'
 
 type Props = {
@@ -62,14 +61,6 @@ export default function BusinessTableHeader({ searchOptions }: Props) {
             <SelectItem value='false'>Chưa xác thực</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-
-      <div className='ml-auto flex items-center gap-2'>
-        {/* <Button size='sm' variant='outline' className='h-7 gap-1'>
-          <File className='h-3.5 w-3.5' />
-          <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>Export</span>
-        </Button> */}
-        <CreateEventButton />
       </div>
     </div>
   )

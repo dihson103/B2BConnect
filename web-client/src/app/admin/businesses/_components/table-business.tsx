@@ -18,6 +18,7 @@ export default function AppBusinessTable({ data }: Props) {
             <TableHead>Mã số thuế</TableHead>
             <TableHead>Tên doanh nghiệp</TableHead>
             <TableHead className='hidden md:table-cell'>Quy mô doanh nghiệp</TableHead>
+            <TableHead>Ngày thành lập</TableHead>
             <TableHead>
               <span className='sr-only'>Hành động</span>
             </TableHead>
