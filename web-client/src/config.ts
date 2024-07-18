@@ -7,7 +7,8 @@ const configSchema = z.object({
   REGISTER_PATH: z.string(),
   ADMIN_PATH: z.string(),
   HOME_PATH: z.string(),
-  DASHBOARD: z.string()
+  DASHBOARD: z.string(),
+  BUSINESS_PATH: z.string()
 })
 
 const configProject = configSchema.safeParse(process.env)
@@ -24,6 +25,7 @@ const envConfig = {
   HOME_URL: `${configProject.data.BASE_URL}${configProject.data.HOME_PATH}`,
   DASHBOARD_URL: `${configProject.data.BASE_URL}/admin/${configProject.data.DASHBOARD}`,
   REGISTER_URL: `${configProject.data.BASE_URL}${configProject.data.REGISTER_PATH}`,
+  BUSINESS_URL: `${configProject.data.BASE_URL}${configProject.data.BUSINESS_PATH}`
 }
 
 export default envConfig

@@ -49,4 +49,9 @@ internal class AccountRepository : IAccountRepository
         var account = await _context.Accounts.SingleOrDefaultAsync(account => account.Email == email && account.IsActive == true);
         return account;
     }
+
+    public async Task<bool> IsEmailExistAsync(string email)
+    {
+        return await _context.Accounts.AnyAsync(a => a.Email == email);
+    }
 }

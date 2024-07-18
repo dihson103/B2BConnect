@@ -9,31 +9,33 @@ import { loginAction } from '@/actions/auth.actions'
 import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
 import { apiErrorHandler } from '@/lib/utils'
-import { LoginType } from '@/types/auth.types'
+import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
   const { toast } = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter()
 
   const handleLogin = () => {
     const data = {
-      email, 
+      email,
       password
     }
 
     loginAction(data)
       .then((data) => {
         toast({
-          title: 'Login success',
-          description: 'Welcome back',
+          title: 'Đăng nhập thành công',
+          description: `Chào mừng ${data.data.account.email}`,
           duration: 5000
         })
+        router.push(data.data.account.isAdmin ? 'admin/businesses' : 'home')
       })
       .catch((error: Error) => {
         apiErrorHandler(error.message)
-      })  
-    }
+      })
+  }
 
   return (
     <div className='flex min-h-screen items-center justify-center'>

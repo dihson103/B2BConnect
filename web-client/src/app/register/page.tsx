@@ -1,12 +1,10 @@
-"use client"
+'use client'
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useState } from 'react'
-import { registerAction } from '@/actions/auth.actions'
+import { getLoginResponseCookie, registerAction } from '@/actions/auth.actions'
 import { toast } from '@/components/ui/use-toast'
 import { apiErrorHandler } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
@@ -14,13 +12,15 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { CreateAccountFormType, CreateAccountSchema } from '@/rules/account.rules'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { RegisterType } from '@/types/auth.types'
+import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
+  const router = useRouter()
 
   const form = useForm<CreateAccountFormType>({
     resolver: zodResolver(CreateAccountSchema),
     defaultValues: {
-      email: '', 
+      email: '',
       password: '',
       retypedPassword: ''
     }
@@ -35,17 +35,18 @@ export default function RegisterPage() {
 
     registerAction(body)
       .then((response) => {
+        router.push('login')
         toast({
-          title: 'Login success',
-          description: 'Welcome back',
+          title: 'Tạo tài khoản thành công',
+          description: 'Vui lòng đăng nhập để tiếp tục',
           duration: 5000
         })
         form.reset()
       })
       .catch((error: Error) => {
         apiErrorHandler(error.message)
-      })  
-    }
+      })
+  }
 
   return (
     <div className='flex min-h-screen items-center justify-center'>
@@ -58,52 +59,53 @@ export default function RegisterPage() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleRegister)}>
                 <div className='grid gap-2 mt-2'>
-                  <FormField 
+                  <FormField
                     control={form.control}
                     name='email'
-                    render={({field}) => (
+                    render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input 
-                            id='email' 
-                            type='email' 
-                            placeholder='m@example.com' 
-                            required {...field}
+                          <Input
+                            id='email'
+                            type='email'
+                            placeholder='m@example.com'
+                            required
+                            {...field}
                             value={field.value || ''}
                           />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
                 <div className='grid gap-2 mt-2'>
-                  <FormField 
+                  <FormField
                     control={form.control}
                     name='password'
-                    render={({field}) => (
+                    render={({ field }) => (
                       <FormItem>
                         <FormLabel>Mật khẩu</FormLabel>
                         <FormControl>
-                          <Input id='password' type='password' required {...field} value={field.value || ''}/>
+                          <Input id='password' type='password' required {...field} value={field.value || ''} />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
                 <div className='grid gap-2 mt-2'>
-                  <FormField 
+                  <FormField
                     control={form.control}
                     name='retypedPassword'
-                    render={({field}) => (
+                    render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nhập lại mật khẩu</FormLabel>
                         <FormControl>
-                          <Input id='retypedPassword' type='password' required {...field} value={field.value || ''}/>
+                          <Input id='retypedPassword' type='password' required {...field} value={field.value || ''} />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

@@ -11,4 +11,5 @@ public interface IAccountRepository
     Task<(List<Account>?, int)> SearchAccountsAsync(GetAccountsQuery request);
     void Update(Account account);
     Task<Account?> LoginAsync(string email);
+    Task<bool> IsEmailExistAsync(string email); 
 }

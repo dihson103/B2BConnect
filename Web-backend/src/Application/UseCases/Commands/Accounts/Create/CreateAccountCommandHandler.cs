@@ -35,5 +35,9 @@ public class CreateAccountCommandHandler(
         {
             throw new MyValidationException(validatorResult.ToDictionary());
         }
+
+        var isEmailExist = await _accountRepository.IsEmailExistAsync(request.Email);
+        if (isEmailExist)
+            throw new MyBadRequestException("Email đã tồn tại");
     }
 }
