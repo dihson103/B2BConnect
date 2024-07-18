@@ -24,7 +24,7 @@ public class Event : EntityAuditBase<Guid>
         return new();
     }
 
-    public static Event Create(CreateEventCommand request)
+    public static Event Create(CreateEventCommand request, string createdBy)
     {
         return new Event()
         {
@@ -35,10 +35,12 @@ public class Event : EntityAuditBase<Guid>
             Status = EventStatus.PLANNING,
             Location = request.Location,
             Id = Guid.NewGuid(),
+            CreatedBy = createdBy,
+            CreatedDate = DateTime.UtcNow
         };
     }
 
-    public void Update(UpdateEventRequest request)
+    public void Update(UpdateEventRequest request, string updatedBy)
     {
         var newEventIndustries = request.IndustryIds
             .Select(industryId => EventIndustry.Create(Id, industryId))
@@ -51,6 +53,8 @@ public class Event : EntityAuditBase<Guid>
         Status = request.Status;
         Location = request.Location;
         EventIndustries = newEventIndustries;
+        UpdatedBy = updatedBy;
+        UpdatedDate = DateTime.UtcNow;
     }
 
     public void UpdateStatus(EventStatus status)

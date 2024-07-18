@@ -31,8 +31,8 @@ public class AddEventTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-                )
+                null, null
+                ), "098"
             );
 
         // Act

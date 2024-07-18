@@ -31,8 +31,9 @@ public class GetByEventIdAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ), "099999"
             );
         var newEvent1 = Event.Create(
             new CreateEventCommand(
@@ -42,8 +43,9 @@ public class GetByEventIdAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ), "09977"
             );
         _context.Events.Add(newEvent1);
         _context.Events.Add(newEvent);
@@ -81,8 +83,9 @@ public class GetByEventIdAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ), "09878"
             );
         var eventIndustry = EventIndustry.Create(idustry.Id, newEvent.Id);
         _context.Events.Add(newEvent);

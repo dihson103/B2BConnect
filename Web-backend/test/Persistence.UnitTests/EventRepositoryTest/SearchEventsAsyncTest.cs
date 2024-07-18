@@ -36,8 +36,9 @@ public class SearchEventsAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-                )
+                null, null
+                ),
+            "098788"
             ),
             Event.Create(
             new CreateEventCommand(
@@ -47,8 +48,9 @@ public class SearchEventsAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-                )
+                null, null
+                ),
+            "09788"
             ),
             Event.Create(
             new CreateEventCommand(
@@ -58,8 +60,10 @@ public class SearchEventsAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ),
+            "098799"
             ),
         };
 

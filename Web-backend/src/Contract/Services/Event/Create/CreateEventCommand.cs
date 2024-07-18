@@ -9,4 +9,5 @@ public record CreateEventCommand(
     DateTime EndAt,
     string Location,
     string Image,
-    List<Guid> IndustryIds) : ICommand;
+    List<Guid> IndustryIds,
+    List<EventImageRequest>? Images) : ICommand;

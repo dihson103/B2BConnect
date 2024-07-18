@@ -44,7 +44,7 @@ public static class DependencyInjection
             });
         services.AddAuthorization();
         services.AddAuthorizationBuilder()
-            .AddPolicy("require-admin", policy => policy.RequireClaim("isAdmin", "true"));
+            .AddPolicy("require-admin", policy => policy.RequireClaim("isAdmin", "True"));
 
         return services;
     }

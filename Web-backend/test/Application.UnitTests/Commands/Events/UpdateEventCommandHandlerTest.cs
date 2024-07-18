@@ -6,12 +6,14 @@ using Moq;
 using Contract.Services.Event.Share;
 using Domain.Abstractioins.Exceptions;
 using Domain.Entities;
+using Application.Abstractions.Services;
 
 namespace Application.UnitTests.Commands.Events;
 public class UpdateEventCommandHandlerTest
 {
     private readonly Mock<IEventRepository> _eventRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IRequestContext> _requestContextMock;
     private readonly Mock<IIndustryRepository> _industryRepositoryMock;
     private readonly IValidator<UpdateEventRequest> _validator;
     private readonly UpdateEventCommandHandler handler;
@@ -20,9 +22,10 @@ public class UpdateEventCommandHandlerTest
     {
         _eventRepositoryMock = new();
         _unitOfWorkMock = new();
+        _requestContextMock = new();
         _industryRepositoryMock = new();
         _validator = new UpdateEventValidator(_industryRepositoryMock.Object);
-        handler = new(_eventRepositoryMock.Object, _unitOfWorkMock.Object, _validator);
+        handler = new(_eventRepositoryMock.Object, _requestContextMock.Object, _unitOfWorkMock.Object, _validator);
     }
 
     [Fact]

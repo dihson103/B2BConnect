@@ -1,4 +1,5 @@
 using Application;
+using Application.Abstractions.Services;
 using Carter;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,7 @@ using MinimalHelpers.OpenApi;
 using Persistence;
 using WebApi.InitialData;
 using WebApi.Middlewares;
+using WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,9 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
     .AddPersistence(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IRequestContext, RequestContextService>();
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {

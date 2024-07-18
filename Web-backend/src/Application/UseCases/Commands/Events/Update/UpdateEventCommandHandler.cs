@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Application.Abstractions.Services;
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
 using Contract.Services.Event.Share;
@@ -10,14 +11,17 @@ using FluentValidation;
 namespace Application.UseCases.Commands.Events.Update;
 internal sealed class UpdateEventCommandHandler(
     IEventRepository _eventRepository,
+    IRequestContext _context,
     IUnitOfWork _unitOfWork,
     IValidator<UpdateEventRequest> _validator) : ICommandHandler<UpdateEventCommand>
 {
     public async Task<Result.Success> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
     {
         var eventt = await GetEventAndValidateRequest(request);
+
+        var updatedBy = _context.UserLoggedIn;
         
-        eventt.Update(request.UpdateEventRequest);
+        eventt.Update(request.UpdateEventRequest, updatedBy);
 
         _eventRepository.Update(eventt);
         await _unitOfWork.SaveChangesAsync();

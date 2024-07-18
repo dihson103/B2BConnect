@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Application.Abstractions.Services;
 using Application.UseCases.Commands.Events.Create;
 using Contract.Services.Event.Create;
 using Domain.Abstractioins.Exceptions;
@@ -15,7 +16,10 @@ public class CreateEventCommandHandlerTest
     private readonly Mock<IEventRepository> _eventRepositoryMock;
     private readonly Mock<IEventIndustryRepository> _eventIndustryRepositoryMock;
     private readonly Mock<IIndustryRepository> _industryRepositoryMock;
+    private readonly Mock<IMediaRepository> _mediaRepositoryMock;
+    private readonly Mock<IEventMediaRepository> _eventMediaRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IRequestContext> _requestContextMock;
     private readonly CreateEventCommandHandler _handler;
 
     public CreateEventCommandHandlerTest()
@@ -23,12 +27,18 @@ public class CreateEventCommandHandlerTest
         _eventRepositoryMock = new Mock<IEventRepository>();
         _eventIndustryRepositoryMock = new Mock<IEventIndustryRepository>();
         _industryRepositoryMock = new Mock<IIndustryRepository>();
+        _requestContextMock = new Mock<IRequestContext>();
+        _eventMediaRepositoryMock = new Mock<IEventMediaRepository>();
+        _mediaRepositoryMock = new Mock<IMediaRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _validator = new CreateEventValidator(_industryRepositoryMock.Object);
 
         _handler = new CreateEventCommandHandler(
             _eventRepositoryMock.Object,
             _eventIndustryRepositoryMock.Object,
+            _mediaRepositoryMock.Object,
+            _eventMediaRepositoryMock.Object,
+            _requestContextMock.Object,
             _unitOfWorkMock.Object,
             _validator);
     }
@@ -44,7 +54,8 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(10),
             "Location",
             "Image",
-            industryIds);
+            industryIds,
+            null);
 
         _industryRepositoryMock
             .Setup(repo => repo.IsAllIndustryIdsExistAsync(It.IsAny<List<Guid>>()))
@@ -70,7 +81,8 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(10),
             "Location",
             "Image",
-            new List<Guid> { Guid.NewGuid() });
+            new List<Guid> { Guid.NewGuid() },
+            null);
 
         _industryRepositoryMock
             .Setup(repo => repo.IsAllIndustryIdsExistAsync(It.IsAny<List<Guid>>()))
@@ -92,7 +104,8 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(10),
             "Location",
             "Image",
-            new List<Guid> { Guid.NewGuid() });
+            new List<Guid> { Guid.NewGuid() },
+            null);
 
         _industryRepositoryMock
             .Setup(repo => repo.IsAllIndustryIdsExistAsync(It.IsAny<List<Guid>>()))
@@ -114,7 +127,8 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(10),
             "Location",
             "Image",
-            new List<Guid> { Guid.NewGuid() });
+            new List<Guid> { Guid.NewGuid() },
+            null);
 
         _industryRepositoryMock
             .Setup(repo => repo.IsAllIndustryIdsExistAsync(It.IsAny<List<Guid>>()))
@@ -143,7 +157,8 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(9),
             location,
             image,
-            new List<Guid> { Guid.NewGuid() });
+            new List<Guid> { Guid.NewGuid() },
+            null);
 
         _industryRepositoryMock
             .Setup(repo => repo.IsAllIndustryIdsExistAsync(It.IsAny<List<Guid>>()))

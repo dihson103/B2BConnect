@@ -30,8 +30,10 @@ public class AddRangeTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ), "097888"
+            
             );
         var newEvent1 = Event.Create(
             new CreateEventCommand(
@@ -41,8 +43,10 @@ public class AddRangeTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ),
+            "097888"
             );
         _context.Events.Add(newEvent1);
         _context.Events.Add(newEvent);

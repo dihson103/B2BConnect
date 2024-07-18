@@ -22,7 +22,7 @@ public class EventApiEndpoints : CarterModule
             var result = await sender.Send(CreateEventCommand);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization("require-admin").WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Events api" } }
         });
@@ -32,7 +32,7 @@ public class EventApiEndpoints : CarterModule
             var result = await sender.Send(new GetByIdQuery(id));
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Events api" } }
         });
@@ -42,7 +42,7 @@ public class EventApiEndpoints : CarterModule
             var result = await sender.Send(query);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Events api" } }
         });
@@ -53,7 +53,7 @@ public class EventApiEndpoints : CarterModule
             var result = await sender.Send(updateEventCommand);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization("require-admin").WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Events api" } }
         });
@@ -65,7 +65,7 @@ public class EventApiEndpoints : CarterModule
             var result = await sender.Send(requestJoinCommand);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization("require-admin").WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Events api" } }
         });

@@ -29,8 +29,8 @@ public class GetByIdIncludeIndustriesAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-                )
+                null, null
+                ), "0999"
             );
         var industry = Industry.Create("Industry");
         var eventIndustry = EventIndustry.Create(eventt.Id, industry.Id);
