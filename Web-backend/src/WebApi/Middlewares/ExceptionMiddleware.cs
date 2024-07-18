@@ -28,7 +28,6 @@ public class ExceptionMiddleware
                 Status = excepion.StatusCode,
                 Message = excepion?.Message ?? "My exception",
                 Error = excepion?.Error ?? null,
-                IsSuccess = false
             };
 
             await context.Response.WriteAsJsonAsync(error);
@@ -40,7 +39,8 @@ public class ExceptionMiddleware
             var error = new
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Message = "Internal Server Error"
+                Message = "Internal Server Error",
+                Error = ex.ToString()
             };
 
             Console.WriteLine(ex.Message);

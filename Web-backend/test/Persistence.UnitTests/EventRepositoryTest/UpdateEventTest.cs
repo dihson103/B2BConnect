@@ -31,8 +31,9 @@ public class UpdateEventTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-            )
+                null, null
+            ),
+            "097733"
         );
 
         _eventRepository.Add(newEvent);
@@ -65,8 +66,9 @@ public class UpdateEventTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-            )
+                null, null
+            ),
+            "0987333"
         );
 
         _eventRepository.Add(newEvent);

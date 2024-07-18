@@ -13,10 +13,7 @@ internal sealed class GetEventsQueryHandler(IEventRepository _eventRepository, I
         GetEventsQuery request,
         CancellationToken cancellationToken)
     {
-        var result = await _eventRepository.SearchEventsAsync(request);
-        var events = result.Item1;
-        var totalPages = result.Item2;
-        var totalItems = result.Item3;
+        var (events, totalPages, totalItems) = await _eventRepository.SearchEventsAsync(request);
 
         if (events is null || events.Count == 0)
         {

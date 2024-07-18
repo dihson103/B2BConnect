@@ -11,20 +11,30 @@ public class EventMappingProfile : Profile
     public EventMappingProfile()
     {
         CreateMap<Event, EventResponse>()
-            .ForCtorParam("Id", opt => opt.MapFrom(src => src.Id))
-            .ForCtorParam("Name", opt => opt.MapFrom(src => src.Name))
-            .ForCtorParam("Description", opt => opt.MapFrom(src => src.Description))
-            .ForCtorParam("Location", opt => opt.MapFrom(src => src.Location))
-            .ForCtorParam("Status", opt => opt.MapFrom(src => src.Status))
-            .ForCtorParam("StatusDescription", opt => opt.MapFrom(src => src.Status.GetDescription()));
+            .ConstructUsing(src => new EventResponse(
+                src.Id,
+                src.Name,
+                src.Description,
+                src.StartAt,
+                src.EndAt,
+                src.Location,
+                src.EventMedias.FirstOrDefault(sm => sm.IsMain) == null ? "image_not_found.png" : src.EventMedias.FirstOrDefault(sm => sm.IsMain).Media.Path,
+                src.Status,
+                src.Status.GetDescription()
+                ));
 
         CreateMap<Event, SingleEventResponse>()
-            .ForCtorParam("Id", opt => opt.MapFrom(src => src.Id))
-            .ForCtorParam("Name", opt => opt.MapFrom(src => src.Name))
-            .ForCtorParam("Description", opt => opt.MapFrom(src => src.Description))
-            .ForCtorParam("Location", opt => opt.MapFrom(src => src.Location))
-            .ForCtorParam("Status", opt => opt.MapFrom(src => src.Status))
-            .ForCtorParam("StatusDescription", opt => opt.MapFrom(src => src.Status.GetDescription()))
-            .ForCtorParam("Industries", opt => opt.MapFrom(src => src.EventIndustries.Select(e => new IndustryResponse(e.Industry.Id, e.Industry.Name))));
+            .ConstructUsing(src => new SingleEventResponse(
+                src.Id,
+                src.Name,
+                src.Description,
+                src.StartAt,
+                src.EndAt,
+                src.Location,
+                src.EventMedias.FirstOrDefault(sm => sm.IsMain) == null ? "image_not_found.png" : src.EventMedias.FirstOrDefault(sm => sm.IsMain).Media.Path,
+                src.Status,
+                src.Status.GetDescription(),
+                src.EventIndustries.Select(x => new IndustryResponse(x.IndustryId, x.Industry.Name)).ToList()
+                ));
     }
 }

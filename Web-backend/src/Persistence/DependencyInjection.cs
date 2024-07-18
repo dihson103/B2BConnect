@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<IBranchRepository, BranchRepository>();
         services.AddScoped<ISectorRepository, SectorRepository>();
         services.AddScoped<IParticipationRepository, ParticipationRepository>();
+        services.AddScoped<IMediaRepository, MediaRepository>();
+        services.AddScoped<IEventMediaRepository, EventMediaRepository>();
 
         return services;
     }

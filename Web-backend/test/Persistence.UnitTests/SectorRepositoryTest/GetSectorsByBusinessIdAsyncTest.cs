@@ -42,7 +42,9 @@ public class GetSectorsByBusinessIdAsyncTest : IDisposable
                 DateOfEstablishment = new DateOnly(2019, 5, 21),
                 NumberOfEmployee = NumberOfEmployee.FROM_50_TO_100,
                 IsVerified = true,
-                Name = "Công ty ABC"
+                Name = "Công ty ABC",
+                CreatedBy = "0987",
+                CreatedDate = DateTime.UtcNow
             },
             new Business
             {
@@ -51,7 +53,9 @@ public class GetSectorsByBusinessIdAsyncTest : IDisposable
                 DateOfEstablishment = new DateOnly(2019, 5, 21),
                 NumberOfEmployee = NumberOfEmployee.FROM_50_TO_100,
                 IsVerified = true,
-                Name = "Công ty EGH"
+                Name = "Công ty EGH",
+                 CreatedBy = "0987",
+                CreatedDate = DateTime.UtcNow
             }
         };
 

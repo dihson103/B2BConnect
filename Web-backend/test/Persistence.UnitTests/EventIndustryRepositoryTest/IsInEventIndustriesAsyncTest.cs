@@ -30,8 +30,8 @@ public class IsInEventIndustriesAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
-                null
-                )
+                null, null
+                ), "09899"
             );
         var newEvent1 = Event.Create(
             new CreateEventCommand(
@@ -41,8 +41,9 @@ public class IsInEventIndustriesAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(2),
                 "Location",
                 "Image",
+                null,
                 null
-                )
+                ), "09899"
             );
         _context.Events.Add(newEvent1);
         _context.Events.Add(newEvent);

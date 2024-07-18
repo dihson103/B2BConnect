@@ -63,9 +63,12 @@ internal class EventRepository : IEventRepository
         int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
 
         var events = await query
+            .Include(e => e.EventMedias)
+                .ThenInclude(em => em.Media)
             .Skip((request.PageIndex - 1) * request.PageSize)
             .Take(request.PageSize)
             .AsNoTracking()
+            .AsSplitQuery()
             .ToListAsync();
 
         return (events, totalPages, totalItems);
