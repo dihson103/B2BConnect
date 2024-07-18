@@ -8,9 +8,9 @@ using Contract.Services.Business.Share;
 
 namespace Application.UseCases.Queries.Businesses.GetBusinesses;
 public sealed class GetBusinessQueryHandler(IBusinessRepository _businessRepository, IMapper _mapper) :
-    IQueryHandler<GetBusinessesQuery, SearchResponse<List<BusinessResponse>>>
+    IQueryHandler<GetBusinessesQuery, SearchResponse<List<BusinessesResponse>>>
 {
-    public async Task<Result.Success<SearchResponse<List<BusinessResponse>>>> Handle(GetBusinessesQuery request, 
+    public async Task<Result.Success<SearchResponse<List<BusinessesResponse>>>> Handle(GetBusinessesQuery request, 
         CancellationToken cancellationToken)
     {
 
@@ -22,14 +22,14 @@ public sealed class GetBusinessQueryHandler(IBusinessRepository _businessReposit
 
         if (businesses is null || businesses.Count <= 0 || totalPage <= 0)
         {
-            return Result.Success<SearchResponse<List<BusinessResponse>>>
+            return Result.Success<SearchResponse<List<BusinessesResponse>>>
                .Get(null, "Không tìm thấy doanh nghiệp nào phù hợp");
         }
 
-        var data = businesses.ConvertAll(p => _mapper.Map<BusinessResponse>(p));
+        var data = businesses.ConvertAll(p => _mapper.Map<BusinessesResponse>(p));
 
-        var searchResponse = new SearchResponse<List<BusinessResponse>>(request.PageIndex, totalPage, totalItems, data);
+        var searchResponse = new SearchResponse<List<BusinessesResponse>>(request.PageIndex, totalPage, totalItems, data);
 
-        return Result.Success<SearchResponse<List<BusinessResponse>>>.Get(searchResponse);
+        return Result.Success<SearchResponse<List<BusinessesResponse>>>.Get(searchResponse);
     }
 }

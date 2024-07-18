@@ -18,6 +18,7 @@ public class BusinessRepository : IBusinessRepository
                      .AsNoTracking()
                      .AsSplitQuery()
                      .Include(e => e.Representative)
+                     .Include(e => e.Account)
                     .Include(e => e.Branches!)
                     .SingleOrDefaultAsync(e => e.Id == id);
     }

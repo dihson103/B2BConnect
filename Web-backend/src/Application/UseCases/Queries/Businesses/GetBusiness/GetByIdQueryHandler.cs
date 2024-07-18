@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Abstractions.Data;
+﻿using Application.Abstractions.Data;
 using AutoMapper;
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
 using Contract.Services.Business.GetById;
 using Contract.Services.Business.Share;
-using Contract.Services.Event.GetEvents;
 using Domain.Abstractioins.Exceptions;
 
 namespace Application.UseCases.Queries.Businesses.GetBusiness;
