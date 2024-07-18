@@ -18,8 +18,9 @@ public class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Verification> Verifications { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Participation> Participations { get; set; }
-    public DbSet<Image> Images { get; set; }
     public DbSet<EventIndustry> EventIndustries { get; set; }
+    public DbSet<Media> Medias { get; set; }
+    public DbSet<EventMedia> EventMedias { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,7 +66,6 @@ public class AppDbContext : DbContext, IUnitOfWork
         {
             entity.Property(e => e.Name).HasColumnType("varchar(100)");
             entity.Property(e => e.Location).HasColumnType("varchar(100)");
-            entity.Property(e => e.Image).HasColumnType("varchar(50)");
         });
 
         modelBuilder.Entity<Verification>(entity =>
@@ -90,12 +90,10 @@ public class AppDbContext : DbContext, IUnitOfWork
         .WithOne(r => r.Business)
         .HasForeignKey<Representative>(r => r.BusinessId);
 
-        modelBuilder.Entity<Image>(entity =>
-        {
-            entity.Property(e => e.Value).HasColumnType("varchar(50)");
-        });
-
         modelBuilder.Entity<EventIndustry>()
             .HasKey(s => new { s.EventId, s.IndustryId });
+
+        modelBuilder.Entity<EventMedia>()
+            .HasKey(s => new { s.EventId, s.MediaId });
     }
 }

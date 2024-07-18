@@ -9,7 +9,7 @@ public class Result
 
         public static Success Create(string message = "Tạo thành công") => new Success()
         {
-            Status = (int)HttpStatusCode.Created,
+            Status = (int)HttpStatusCode.OK,
             Message = message,
         };
 

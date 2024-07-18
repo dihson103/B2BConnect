@@ -15,7 +15,6 @@ public class EventMappingProfile : Profile
             .ForCtorParam("Name", opt => opt.MapFrom(src => src.Name))
             .ForCtorParam("Description", opt => opt.MapFrom(src => src.Description))
             .ForCtorParam("Location", opt => opt.MapFrom(src => src.Location))
-            .ForCtorParam("Image", opt => opt.MapFrom(src => src.Image))
             .ForCtorParam("Status", opt => opt.MapFrom(src => src.Status))
             .ForCtorParam("StatusDescription", opt => opt.MapFrom(src => src.Status.GetDescription()));
 
@@ -24,7 +23,6 @@ public class EventMappingProfile : Profile
             .ForCtorParam("Name", opt => opt.MapFrom(src => src.Name))
             .ForCtorParam("Description", opt => opt.MapFrom(src => src.Description))
             .ForCtorParam("Location", opt => opt.MapFrom(src => src.Location))
-            .ForCtorParam("Image", opt => opt.MapFrom(src => src.Image))
             .ForCtorParam("Status", opt => opt.MapFrom(src => src.Status))
             .ForCtorParam("StatusDescription", opt => opt.MapFrom(src => src.Status.GetDescription()))
             .ForCtorParam("Industries", opt => opt.MapFrom(src => src.EventIndustries.Select(e => new IndustryResponse(e.Industry.Id, e.Industry.Name))));

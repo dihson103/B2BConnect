@@ -27,13 +27,13 @@ public class GetEventsQueryHandlerTest
 
         _eventRepositoryMock
             .Setup(repo => repo.SearchEventsAsync(getEventsQuery))
-            .ReturnsAsync((new List<Event> {}, 0));
+            .ReturnsAsync((new List<Event> {}, 0, 0));
 
         var result = await handler.Handle(getEventsQuery, default);
 
         Assert.NotNull(result);
         Assert.Null(result.Data);
-        Assert.True(result.IsSuccess);
+        Assert.True(result.Status == 200);
     }
 
     [Fact]
@@ -43,12 +43,12 @@ public class GetEventsQueryHandlerTest
 
         _eventRepositoryMock
             .Setup(repo => repo.SearchEventsAsync(getEventsQuery))
-            .ReturnsAsync((new List<Event> { Event.Create() }, 1));
+            .ReturnsAsync((new List<Event> { Event.Create() }, 1, 1));
 
         var result = await handler.Handle(getEventsQuery, default);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.Data.Data.Count);
-        Assert.True(result.IsSuccess);
+        Assert.True(result.Status == 200);
     }
 }

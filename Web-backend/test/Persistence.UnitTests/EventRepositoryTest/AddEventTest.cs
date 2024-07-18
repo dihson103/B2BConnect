@@ -48,7 +48,6 @@ public class AddEventTest : IDisposable
         Assert.Equal(newEvent.EndAt, retrievedEvent.EndAt);
         Assert.Equal(newEvent.Status, retrievedEvent.Status);
         Assert.Equal(newEvent.Location, retrievedEvent.Location);
-        Assert.Equal(newEvent.Image, retrievedEvent.Image);
     }
 
     [Fact]

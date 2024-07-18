@@ -134,6 +134,6 @@ public class RequestJoinCommandHanlderTest
         var result = await handler.Handle(requestJoinCommand, default);
 
         Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
+        Assert.True(result.Status == 200);
     }
 }

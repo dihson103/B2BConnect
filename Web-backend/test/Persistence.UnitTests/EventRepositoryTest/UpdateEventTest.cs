@@ -42,7 +42,6 @@ public class UpdateEventTest : IDisposable
         newEvent.Name = "Updated Name";
         newEvent.Description = "Updated Description";
         newEvent.Location = "Updated Location";
-        newEvent.Image = "UpdatedImage.jpg";
         _eventRepository.Update(newEvent);
         await _context.SaveChangesAsync();
 
@@ -52,7 +51,6 @@ public class UpdateEventTest : IDisposable
         Assert.Equal("Updated Name", updatedEvent.Name);
         Assert.Equal("Updated Description", updatedEvent.Description);
         Assert.Equal("Updated Location", updatedEvent.Location);
-        Assert.Equal("UpdatedImage.jpg", updatedEvent.Image);
     }
 
     [Fact]

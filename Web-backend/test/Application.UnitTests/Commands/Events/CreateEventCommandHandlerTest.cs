@@ -56,7 +56,7 @@ public class CreateEventCommandHandlerTest
         _eventRepositoryMock.Verify(repo => repo.Add(It.IsAny<Event>()), Times.Once);
         _eventIndustryRepositoryMock.Verify(repo => repo.AddRange(It.IsAny<List<EventIndustry>>()), Times.Once);
 
-        Assert.True(result.IsSuccess);
+        Assert.True(result.Status == 200);
         Assert.Equal("Tạo sự kiện thành công", result.Message);
     }
 

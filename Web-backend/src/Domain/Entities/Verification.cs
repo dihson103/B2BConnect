@@ -2,7 +2,7 @@
 using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
-public class Verification : EntityBase<Guid>
+public class Verification : EntityAuditBase<Guid>
 {
     public string BusinessLicense {  get; set; }
     public string EstablishmentCertificate { get; set; }

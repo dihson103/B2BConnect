@@ -76,7 +76,7 @@ public class SearchEventsAsyncTest : IDisposable
         var request = new GetEventsQuery("", EventStatus.CANCELLED, 1, 10);
 
         // Act
-        var (events, totalPages) = await _eventRepository.SearchEventsAsync(request);
+        var (events, totalPages, totalItems) = await _eventRepository.SearchEventsAsync(request);
 
         // Assert
         Assert.Equal(1, events.Count);
@@ -90,7 +90,7 @@ public class SearchEventsAsyncTest : IDisposable
         var request = new GetEventsQuery("3", EventStatus.PLANNING, 1, 10);
 
         // Act
-        var (events, totalPages) = await _eventRepository.SearchEventsAsync(request);
+        var (events, totalPages, totalItems) = await _eventRepository.SearchEventsAsync(request);
 
         // Assert
         Assert.Single(events);
@@ -104,11 +104,12 @@ public class SearchEventsAsyncTest : IDisposable
         var request = new GetEventsQuery("son", EventStatus.PLANNING, 1, 10);
 
         // Act
-        var (events, totalPages) = await _eventRepository.SearchEventsAsync(request);
+        var (events, totalPages, totalItems) = await _eventRepository.SearchEventsAsync(request);
 
         // Assert
         Assert.Equal(events.Count, 0);
         Assert.Equal(0, totalPages);
+        Assert.Equal(0, totalItems);
     }
 
 

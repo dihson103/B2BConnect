@@ -100,6 +100,13 @@ namespace Persistence.Migrations
                     b.Property<string>("CoverImage")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateOnly>("DateOfEstablishment")
                         .HasColumnType("date");
 
@@ -119,6 +126,12 @@ namespace Persistence.Migrations
                     b.Property<string>("TaxCode")
                         .IsRequired()
                         .HasColumnType("varchar(15)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("WebSite")
                         .HasColumnType("varchar(50)");
@@ -140,15 +153,18 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -163,6 +179,12 @@ namespace Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -184,24 +206,19 @@ namespace Persistence.Migrations
                     b.ToTable("EventIndustries");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Image", b =>
+            modelBuilder.Entity("Domain.Entities.EventMedia", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("EventId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BusinessId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.HasKey("EventId", "MediaId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("MediaId");
 
-                    b.HasIndex("BusinessId");
-
-                    b.ToTable("Images");
+                    b.ToTable("EventMedias");
                 });
 
             modelBuilder.Entity("Domain.Entities.Industry", b =>
@@ -217,6 +234,34 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Industries");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Media", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Medias");
                 });
 
             modelBuilder.Entity("Domain.Entities.Participation", b =>
@@ -311,6 +356,13 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("CheckedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("EstablishmentCertificate")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -322,6 +374,12 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Note")
                         .HasColumnType("text");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -371,15 +429,23 @@ namespace Persistence.Migrations
                     b.Navigation("Industry");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Image", b =>
+            modelBuilder.Entity("Domain.Entities.EventMedia", b =>
                 {
-                    b.HasOne("Domain.Entities.Business", "Business")
-                        .WithMany("Images")
-                        .HasForeignKey("BusinessId")
+                    b.HasOne("Domain.Entities.Event", "Event")
+                        .WithMany("EventMedias")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Business");
+                    b.HasOne("Domain.Entities.Media", "Media")
+                        .WithMany("EventMedias")
+                        .HasForeignKey("MediaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Domain.Entities.Participation", b =>
@@ -452,8 +518,6 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("Branches");
 
-                    b.Navigation("Images");
-
                     b.Navigation("Participations");
 
                     b.Navigation("Representative");
@@ -465,6 +529,8 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("EventIndustries");
 
+                    b.Navigation("EventMedias");
+
                     b.Navigation("Participations");
                 });
 
@@ -473,6 +539,11 @@ namespace Persistence.Migrations
                     b.Navigation("EventIndustries");
 
                     b.Navigation("Sectors");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Media", b =>
+                {
+                    b.Navigation("EventMedias");
                 });
 #pragma warning restore 612, 618
         }

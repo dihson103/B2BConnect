@@ -3,7 +3,7 @@ using Contract.Services.Business.Share;
 using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
-public class Business : EntityBase<Guid>
+public class Business : EntityAuditBase<Guid>
 {
     public string TaxCode { get; set; }
     public string Name { get; set; }
@@ -20,6 +20,5 @@ public class Business : EntityBase<Guid>
     public Representative? Representative { get; set; }
     public List<Sector>? Sectors { get; set; }
     public List<Participation>? Participations { get; set; }
-    public List<Image>? Images { get; set; }
     public List<Branch>? Branches { get; set; }
 }

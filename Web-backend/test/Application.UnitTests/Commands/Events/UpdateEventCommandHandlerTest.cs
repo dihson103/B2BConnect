@@ -197,6 +197,6 @@ public class UpdateEventCommandHandlerTest
         var result = await handler.Handle(updateEventCommand, default);
 
         Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
+        Assert.True(result.Status == 200);
     }
 }

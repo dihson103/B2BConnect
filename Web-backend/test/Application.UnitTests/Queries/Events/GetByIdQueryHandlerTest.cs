@@ -66,6 +66,6 @@ public class GetByIdQueryHandlerTest
          var result = await handler.Handle(getByIdQuery, default);
 
         Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
+        Assert.True(result.Status == 200);
     }
 }

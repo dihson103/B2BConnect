@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations;
 
 /// <inheritdoc />
-public partial class initialDb : Migration
+public partial class InitDb : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,10 @@ public partial class initialDb : Migration
                 EndAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 Status = table.Column<int>(type: "integer", nullable: false),
                 Location = table.Column<string>(type: "varchar(100)", nullable: false),
-                Image = table.Column<string>(type: "varchar(50)", nullable: false)
+                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                CreatedBy = table.Column<string>(type: "text", nullable: false),
+                UpdatedBy = table.Column<string>(type: "text", nullable: true)
             },
             constraints: table =>
             {
@@ -57,19 +60,50 @@ public partial class initialDb : Migration
             });
 
         migrationBuilder.CreateTable(
-            name: "Representatives",
+            name: "Medias",
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
-                GovernmentId = table.Column<string>(type: "varchar(12)", nullable: false),
-                Fullname = table.Column<string>(type: "varchar(50)", nullable: false),
-                Dob = table.Column<DateOnly>(type: "date", nullable: false),
-                Gender = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                Address = table.Column<string>(type: "varchar(200)", nullable: false)
+                Path = table.Column<string>(type: "text", nullable: false),
+                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                CreatedBy = table.Column<string>(type: "text", nullable: false),
+                UpdatedBy = table.Column<string>(type: "text", nullable: true)
             },
             constraints: table =>
             {
-                table.PrimaryKey("PK_Representatives", x => x.Id);
+                table.PrimaryKey("PK_Medias", x => x.Id);
+            });
+
+        migrationBuilder.CreateTable(
+            name: "Businesses",
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
+                TaxCode = table.Column<string>(type: "varchar(15)", nullable: false),
+                Name = table.Column<string>(type: "varchar(100)", nullable: false),
+                DateOfEstablishment = table.Column<DateOnly>(type: "date", nullable: false),
+                WebSite = table.Column<string>(type: "varchar(50)", nullable: true),
+                AvatarImage = table.Column<string>(type: "varchar(50)", nullable: true),
+                CoverImage = table.Column<string>(type: "varchar(50)", nullable: true),
+                NumberOfEmployee = table.Column<int>(type: "integer", nullable: false),
+                IsVerified = table.Column<bool>(type: "boolean", nullable: false),
+                AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                RepresentativeId = table.Column<Guid>(type: "uuid", nullable: true),
+                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                CreatedBy = table.Column<string>(type: "text", nullable: false),
+                UpdatedBy = table.Column<string>(type: "text", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Businesses", x => x.Id);
+                table.ForeignKey(
+                    name: "FK_Businesses_Accounts_AccountId",
+                    column: x => x.AccountId,
+                    principalTable: "Accounts",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
             });
 
         migrationBuilder.CreateTable(
@@ -97,35 +131,27 @@ public partial class initialDb : Migration
             });
 
         migrationBuilder.CreateTable(
-            name: "Businesses",
+            name: "EventMedias",
             columns: table => new
             {
-                Id = table.Column<Guid>(type: "uuid", nullable: false),
-                TaxCode = table.Column<string>(type: "varchar(15)", nullable: false),
-                Name = table.Column<string>(type: "varchar(100)", nullable: false),
-                DateOfEstablishment = table.Column<DateOnly>(type: "date", nullable: false),
-                WebSite = table.Column<string>(type: "varchar(50)", nullable: true),
-                AvatarImage = table.Column<string>(type: "varchar(50)", nullable: true),
-                CoverImage = table.Column<string>(type: "varchar(50)", nullable: true),
-                NumberOfEmployee = table.Column<int>(type: "integer", nullable: false),
-                IsVerified = table.Column<bool>(type: "boolean", nullable: false),
-                AccountId = table.Column<Guid>(type: "uuid", nullable: false),
-                RepresentativeId = table.Column<Guid>(type: "uuid", nullable: true)
+                EventId = table.Column<Guid>(type: "uuid", nullable: false),
+                MediaId = table.Column<Guid>(type: "uuid", nullable: false)
             },
             constraints: table =>
             {
-                table.PrimaryKey("PK_Businesses", x => x.Id);
+                table.PrimaryKey("PK_EventMedias", x => new { x.EventId, x.MediaId });
                 table.ForeignKey(
-                    name: "FK_Businesses_Accounts_AccountId",
-                    column: x => x.AccountId,
-                    principalTable: "Accounts",
+                    name: "FK_EventMedias_Events_EventId",
+                    column: x => x.EventId,
+                    principalTable: "Events",
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Cascade);
                 table.ForeignKey(
-                    name: "FK_Businesses_Representatives_RepresentativeId",
-                    column: x => x.RepresentativeId,
-                    principalTable: "Representatives",
-                    principalColumn: "Id");
+                    name: "FK_EventMedias_Medias_MediaId",
+                    column: x => x.MediaId,
+                    principalTable: "Medias",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
             });
 
         migrationBuilder.CreateTable(
@@ -144,25 +170,6 @@ public partial class initialDb : Migration
                 table.PrimaryKey("PK_Branches", x => x.Id);
                 table.ForeignKey(
                     name: "FK_Branches_Businesses_BusinessId",
-                    column: x => x.BusinessId,
-                    principalTable: "Businesses",
-                    principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
-            });
-
-        migrationBuilder.CreateTable(
-            name: "Images",
-            columns: table => new
-            {
-                Id = table.Column<Guid>(type: "uuid", nullable: false),
-                Value = table.Column<string>(type: "varchar(50)", nullable: false),
-                BusinessId = table.Column<Guid>(type: "uuid", nullable: false)
-            },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_Images", x => x.Id);
-                table.ForeignKey(
-                    name: "FK_Images_Businesses_BusinessId",
                     column: x => x.BusinessId,
                     principalTable: "Businesses",
                     principalColumn: "Id",
@@ -191,6 +198,29 @@ public partial class initialDb : Migration
                     name: "FK_Participations_Events_EventId",
                     column: x => x.EventId,
                     principalTable: "Events",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        migrationBuilder.CreateTable(
+            name: "Representatives",
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
+                GovernmentId = table.Column<string>(type: "varchar(12)", nullable: false),
+                Fullname = table.Column<string>(type: "varchar(50)", nullable: false),
+                Dob = table.Column<DateOnly>(type: "date", nullable: false),
+                Gender = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                Address = table.Column<string>(type: "varchar(200)", nullable: false),
+                BusinessId = table.Column<Guid>(type: "uuid", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Representatives", x => x.Id);
+                table.ForeignKey(
+                    name: "FK_Representatives_Businesses_BusinessId",
+                    column: x => x.BusinessId,
+                    principalTable: "Businesses",
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Cascade);
             });
@@ -230,7 +260,11 @@ public partial class initialDb : Migration
                 IsChecked = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                 BusinessId = table.Column<Guid>(type: "uuid", nullable: false),
                 CheckedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                BusinessType = table.Column<int>(type: "integer", nullable: false)
+                BusinessType = table.Column<int>(type: "integer", nullable: false),
+                CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                CreatedBy = table.Column<string>(type: "text", nullable: false),
+                UpdatedBy = table.Column<string>(type: "text", nullable: true)
             },
             constraints: table =>
             {
@@ -261,12 +295,6 @@ public partial class initialDb : Migration
             unique: true);
 
         migrationBuilder.CreateIndex(
-            name: "IX_Businesses_RepresentativeId",
-            table: "Businesses",
-            column: "RepresentativeId",
-            unique: true);
-
-        migrationBuilder.CreateIndex(
             name: "IX_Businesses_TaxCode",
             table: "Businesses",
             column: "TaxCode",
@@ -278,14 +306,20 @@ public partial class initialDb : Migration
             column: "IndustryId");
 
         migrationBuilder.CreateIndex(
-            name: "IX_Images_BusinessId",
-            table: "Images",
-            column: "BusinessId");
+            name: "IX_EventMedias_MediaId",
+            table: "EventMedias",
+            column: "MediaId");
 
         migrationBuilder.CreateIndex(
             name: "IX_Participations_EventId",
             table: "Participations",
             column: "EventId");
+
+        migrationBuilder.CreateIndex(
+            name: "IX_Representatives_BusinessId",
+            table: "Representatives",
+            column: "BusinessId",
+            unique: true);
 
         migrationBuilder.CreateIndex(
             name: "IX_Sectors_IndustryId",
@@ -308,16 +342,22 @@ public partial class initialDb : Migration
             name: "EventIndustries");
 
         migrationBuilder.DropTable(
-            name: "Images");
+            name: "EventMedias");
 
         migrationBuilder.DropTable(
             name: "Participations");
+
+        migrationBuilder.DropTable(
+            name: "Representatives");
 
         migrationBuilder.DropTable(
             name: "Sectors");
 
         migrationBuilder.DropTable(
             name: "Verifications");
+
+        migrationBuilder.DropTable(
+            name: "Medias");
 
         migrationBuilder.DropTable(
             name: "Events");
@@ -330,8 +370,5 @@ public partial class initialDb : Migration
 
         migrationBuilder.DropTable(
             name: "Accounts");
-
-        migrationBuilder.DropTable(
-            name: "Representatives");
     }
 }
