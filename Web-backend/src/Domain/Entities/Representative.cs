@@ -1,4 +1,5 @@
-﻿using Domain.Abstractioins.Enities;
+﻿using Contract.Services.Representative.Create;
+using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
 public class Representative : EntityBase<Guid>
@@ -14,5 +15,19 @@ public class Representative : EntityBase<Guid>
     public Business Business { get; set; }  
     private Representative()
     {
+    }
+
+    public static Representative Create(CreateRepresentativeCommand command)
+    {
+        return new Representative()
+        {
+            Id = Guid.NewGuid(),
+            GovernmentId = command.GovernmentId,
+            Fullname = command.Fullname,
+            Dob = command.Dob,
+            Gender = command.Gender,
+            Address = command.Address,
+            BusinessId = command.BusinessId
+        };
     }
 }

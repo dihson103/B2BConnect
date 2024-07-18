@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Contract.Services.Business.Create;
 using Contract.Services.Business.Share;
 using Domain.Abstractioins.Enities;
 
@@ -21,4 +22,27 @@ public class Business : EntityAuditBase<Guid>
     public List<Sector>? Sectors { get; set; }
     public List<Participation>? Participations { get; set; }
     public List<Branch>? Branches { get; set; }
+
+    public static Business Create(CreateBusinessCommand businessCommand)
+    {
+        var Id = Guid.NewGuid();
+        var sectors = businessCommand.IndustryIds!
+           .Select(industryId => Sector.Create(Id, industryId))
+           .ToList();
+        var branches = businessCommand.Branches.Select(b => Branch.Create(b)).ToList();
+
+        return new Business()
+        {
+            Id = Id,
+            TaxCode = businessCommand.TaxCode!,
+            Name = businessCommand.Name!,
+            DateOfEstablishment = businessCommand.DateOfEstablishments,
+            WebSite = businessCommand.WebSite,
+            AvatarImage = businessCommand.AvatarImage,
+            CoverImage = businessCommand.CoverImage,
+            Sectors = sectors,
+            Representative = Representative.Create(businessCommand.Representative),
+            Branches = branches
+        };
+    }
 }
