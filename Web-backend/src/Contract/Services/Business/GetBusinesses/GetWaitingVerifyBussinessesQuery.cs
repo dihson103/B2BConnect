@@ -3,10 +3,9 @@ using Contract.Abstractions.Messages;
 using Contract.Services.Business.Share;
 
 namespace Contract.Services.Business.GetBusinesses;
-public record GetBusinessesQuery(
+public record GetWaitingVerifyBussinessesQuery(
     string? SearchTerm,
-   List<Guid>? IndustryIds, 
-    NumberOfEmployee? NumberOfEmployee,
-    bool IsVerified = false,
+    bool newestSorting = true,
     int PageIndex = 1,
-    int PageSize = 10) : IQuery<SearchResponse<List<BusinessesResponse>>>;
+    int PageSize = 10) : IQuery<SearchResponse<List<BusinessWaitingVerifyResponse>>>;
+

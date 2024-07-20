@@ -10,3 +10,5 @@ public record UpdateEventRequest(
     string Image,
     List<Guid> IndustryIds,
     EventStatus Status);
+
+

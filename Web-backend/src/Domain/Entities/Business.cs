@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Contract.Services.Business.Create;
 using Contract.Services.Business.Share;
 using Domain.Abstractioins.Enities;
 
@@ -15,10 +16,38 @@ public class Business : EntityAuditBase<Guid>
     public bool IsVerified { get; set; }
     [ForeignKey(nameof(Account))]
     public Guid AccountId { get; set; }
-    public Account Account { get; set; }    
+    public Account Account { get; set; }
     public Guid? RepresentativeId { get; set; }
     public Representative? Representative { get; set; }
     public List<Sector>? Sectors { get; set; }
     public List<Participation>? Participations { get; set; }
     public List<Branch>? Branches { get; set; }
+
+    public static Business Create(SaveBusinessCommand businessCommand, string CreateBy)
+    {
+        return new Business()
+        {
+            Id = Guid.NewGuid(),
+            TaxCode = businessCommand.TaxCode!,
+            Name = businessCommand.Name!,
+            DateOfEstablishment = businessCommand.DateOfEstablishments,
+            WebSite = businessCommand.WebSite,
+            AvatarImage = businessCommand.AvatarImage,
+            CoverImage = businessCommand.CoverImage,
+            CreatedBy = CreateBy.ToString(),
+            CreatedDate = DateTime.UtcNow
+        };
+    }
+
+    public void Update(SaveBusinessCommand businessCommand, string loggedUser)
+    {
+        TaxCode = businessCommand.TaxCode!;
+        Name = businessCommand.Name!;
+        DateOfEstablishment = businessCommand.DateOfEstablishments;
+        WebSite = businessCommand.WebSite;
+        AvatarImage = businessCommand.AvatarImage;
+        CoverImage = businessCommand.CoverImage;
+        UpdatedBy = loggedUser;
+        UpdatedDate = DateTime.UtcNow;
+    }
 }
