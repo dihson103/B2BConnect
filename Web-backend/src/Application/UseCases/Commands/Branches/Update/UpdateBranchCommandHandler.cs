@@ -1,10 +1,7 @@
-﻿
-using Application.Abstractions.Data;
+﻿using Application.Abstractions.Data;
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
 using Contract.Services.Branch.Update;
-using Contract.Services.Event.Share;
-using Contract.Services.Event.Update;
 using Domain.Abstractioins.Exceptions;
 using Domain.Entities;
 using FluentValidation;

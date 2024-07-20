@@ -16,33 +16,38 @@ public class Business : EntityAuditBase<Guid>
     public bool IsVerified { get; set; }
     [ForeignKey(nameof(Account))]
     public Guid AccountId { get; set; }
-    public Account Account { get; set; }    
+    public Account Account { get; set; }
     public Guid? RepresentativeId { get; set; }
     public Representative? Representative { get; set; }
     public List<Sector>? Sectors { get; set; }
     public List<Participation>? Participations { get; set; }
     public List<Branch>? Branches { get; set; }
 
-    public static Business Create(CreateBusinessCommand businessCommand)
+    public static Business Create(SaveBusinessCommand businessCommand, string CreateBy)
     {
-        var Id = Guid.NewGuid();
-        var sectors = businessCommand.IndustryIds!
-           .Select(industryId => Sector.Create(Id, industryId))
-           .ToList();
-        var branches = businessCommand.Branches.Select(b => Branch.Create(b)).ToList();
-
         return new Business()
         {
-            Id = Id,
+            Id = Guid.NewGuid(),
             TaxCode = businessCommand.TaxCode!,
             Name = businessCommand.Name!,
             DateOfEstablishment = businessCommand.DateOfEstablishments,
             WebSite = businessCommand.WebSite,
             AvatarImage = businessCommand.AvatarImage,
             CoverImage = businessCommand.CoverImage,
-            Sectors = sectors,
-            Representative = Representative.Create(businessCommand.Representative),
-            Branches = branches
+            CreatedBy = CreateBy.ToString(),
+            CreatedDate = DateTime.UtcNow
         };
+    }
+
+    public void Update(SaveBusinessCommand businessCommand, string loggedUser)
+    {
+        TaxCode = businessCommand.TaxCode!;
+        Name = businessCommand.Name!;
+        DateOfEstablishment = businessCommand.DateOfEstablishments;
+        WebSite = businessCommand.WebSite;
+        AvatarImage = businessCommand.AvatarImage;
+        CoverImage = businessCommand.CoverImage;
+        UpdatedBy = loggedUser;
+        UpdatedDate = DateTime.UtcNow;
     }
 }

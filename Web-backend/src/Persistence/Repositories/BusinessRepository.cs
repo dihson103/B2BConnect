@@ -1,6 +1,11 @@
-﻿using Application.Abstractions.Data;
+﻿using System.Web;
+using Application.Abstractions.Data;
+using Application.Utils;
 using Contract.Services.Business.GetBusinesses;
+using Contract.Services.Business.Share;
+using Contract.Services.Verification.Share;
 using Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
@@ -10,6 +15,11 @@ public class BusinessRepository : IBusinessRepository
     public BusinessRepository(AppDbContext context)
     {
         _context = context;
+    }
+
+    public void Add(Business business)
+    {
+        _context.Businesses.Add(business);
     }
 
     public async Task<Business> GetByIdAsync(Guid id)
@@ -37,23 +47,92 @@ public class BusinessRepository : IBusinessRepository
         var searchTerm = getBusinessesQuery.SearchTerm;
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            query = query.Where(b => b.Name.Contains(searchTerm));
+            var s = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Giải mã từ URL
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s).ToLower(); // Chuyển đổi không dấu và chữ thường
+
+            query = query.Where(b => b.Name.ToLower().Contains(searchTermNoDiacritics));
+        }
+
+        if (getBusinessesQuery.IndustryIds != null && getBusinessesQuery.IndustryIds.Any())
+        {
+            query = query
+                .Where(b => b.Sectors!
+                    .Any(s => getBusinessesQuery.IndustryIds.Contains(s.IndustryId)));
+        }
+
+
+        if (getBusinessesQuery.NumberOfEmployee.HasValue)
+        {
+            query = query.Where(b => b.NumberOfEmployee == getBusinessesQuery.NumberOfEmployee.Value);
         }
 
         var totalItems = await query.CountAsync();
-
         int totalPages = (int)Math.Ceiling((double)totalItems / getBusinessesQuery.PageSize);
 
         var businesses = await query
             .OrderBy(b => b.DateOfEstablishment)
             .Skip((getBusinessesQuery.PageIndex - 1) * getBusinessesQuery.PageSize)
             .Take(getBusinessesQuery.PageSize)
-            .Include(b => b.Representative)
-            .Include(b => b.Branches)
             .AsNoTracking()
             .AsSingleQuery()
             .ToListAsync();
 
         return (businesses, totalPages, totalItems);
+    }
+
+    public async Task<(List<BusinessWaitingVerifyResponse>?, int, int)> SearchWaitingBusinessAsync(GetWaitingVerifyBussinessesQuery request)
+    {
+        var query = from business in _context.Businesses
+                    join verification in _context.Verifications
+                    on business.Id equals verification.BusinessId
+                    where !business.IsVerified || !verification.IsChecked
+                    select new
+                    {
+                        Business = business,
+                        Verification = verification
+                    };
+
+
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        {
+            var searchTerm = HttpUtility.UrlDecode(request.SearchTerm); // Giải mã từ URL
+            
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(searchTerm).ToLower(); 
+
+            query = query.Where(bv => bv.Business.Name.ToLower().Contains(searchTermNoDiacritics));
+        }
+
+        query = request.newestSorting
+         ? query.OrderByDescending(bv => bv.Business.CreatedDate)
+         : query.OrderBy(bv => bv.Business.CreatedDate);
+
+
+        var totalItems = await query.CountAsync();
+        int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
+
+        var businesses = await query
+        .Skip((request.PageIndex - 1) * request.PageSize)
+        .Take(request.PageSize)
+        .AsNoTracking()
+        .Select(bv => new BusinessWaitingVerifyResponse(
+            bv.Business.Id,
+            bv.Business.TaxCode,
+            bv.Business.Name,
+            bv.Business.IsVerified,
+            new VerificationResponse(
+                bv.Verification.BusinessLicense,
+                bv.Verification.EstablishmentCertificate,
+                bv.Verification.Note,
+                bv.Verification.BusinessType,
+                bv.Verification.CreatedDate
+            )))
+        .ToListAsync();
+        return (businesses, totalPages, totalItems);
+    }
+
+
+    public void Update(Business business)
+    {
+        _context.Businesses.Update(business);
     }
 }

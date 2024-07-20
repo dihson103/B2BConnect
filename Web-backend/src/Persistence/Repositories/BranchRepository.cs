@@ -17,9 +17,24 @@ public class BranchRepository : IBranchRepository
         _context.Branches.Add(branch);
     }
 
+    public void AddRange(List<Branch> branches)
+    {
+       _context.Branches.AddRange(branches);
+    }
+
     public void Delete(Branch branch)
     {
         _context.Branches.Remove(branch);
+    }
+
+    public void DeleteByBusinessId(Guid id)
+    {
+        var representatives = _context.Branches.Where(r => r.BusinessId == id);
+
+        if (representatives.Any())
+        {
+            _context.Branches.RemoveRange(representatives);
+        }
     }
 
     public async Task<List<Branch>> GetBranchesAsync(GetBranchesQuery getBranchesQuery)

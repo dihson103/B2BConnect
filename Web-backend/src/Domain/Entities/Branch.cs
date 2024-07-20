@@ -19,6 +19,7 @@ public class Branch : EntityBase<Guid>
     {
         return new Branch()
         {
+            Id = Guid.NewGuid(),
             Email = branch.Email,
             Phone = branch.Phone,
             Address = branch.Address,

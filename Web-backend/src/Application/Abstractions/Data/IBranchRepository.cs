@@ -10,4 +10,6 @@ public interface IBranchRepository
     void Delete(Branch branch);
     Task<List<Branch>> GetBranchesAsync(GetBranchesQuery getBranchesQuery);
     Task<Branch> GetByIdAsync(Guid id);
+    void AddRange(List<Branch> branches);
+    void DeleteByBusinessId(Guid id);
 }

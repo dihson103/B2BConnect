@@ -32,6 +32,8 @@ public static class DependencyInjection
         services.AddScoped<IParticipationRepository, ParticipationRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IEventMediaRepository, EventMediaRepository>();
+        services.AddScoped<IRepresentativeRepository, RepresentativeRepository>();
+
 
         return services;
     }
