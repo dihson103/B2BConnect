@@ -29,6 +29,8 @@ public class BusinessRepository : IBusinessRepository
                      .Include(e => e.Representative)
                      .Include(e => e.Account)
                     .Include(e => e.Branches!)
+                    .Include(e => e.Sectors)
+                                .ThenInclude(s => s.Industry) 
                     .SingleOrDefaultAsync(e => e.Id == id);
     }
 
@@ -39,9 +41,16 @@ public class BusinessRepository : IBusinessRepository
             .AnyAsync(b => b.Id == id && b.Account.IsActive == true);
     }
 
-    public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesQuery getBusinessesQuery)
+    public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesByUserQuery getBusinessesQuery)
     {
-        var query = _context.Businesses!.Where(b => b.IsVerified == getBusinessesQuery.IsVerified);
+        var query = _context.Businesses!
+        .Join(_context.Accounts,
+              b => b.AccountId,
+              a => a.Id,
+              (b, a) => new { Business = b, Account = a })
+        .Where(ba => ba.Account.IsActive) // Lọc các business có IsActive = true
+        .Select(ba => ba.Business)
+        .AsQueryable();
 
         if (getBusinessesQuery.IndustryIds != null && getBusinessesQuery.IndustryIds.Any())
         {
@@ -55,23 +64,25 @@ public class BusinessRepository : IBusinessRepository
             query = query.Where(b => b.NumberOfEmployee == getBusinessesQuery.NumberOfEmployee.Value);
         }
 
-        var totalItems = await query.CountAsync();
-        int totalPages = (int)Math.Ceiling((double)totalItems / getBusinessesQuery.PageSize);
-
         var businesses = await query
-            .OrderBy(b => b.DateOfEstablishment)
-            .AsNoTracking()
-            .ToListAsync();
+          .OrderBy(b => b.DateOfEstablishment)
+          .AsNoTracking()
+          .ToListAsync();
 
         if (!string.IsNullOrEmpty(getBusinessesQuery.SearchTerm))
         {
             var s = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Giải mã từ URL
-            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s.ToLower()); 
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s.ToLower());
 
             businesses = businesses
                 .Where(b => StringHandlerUtil.RemoveDiacritics(b.Name.ToLower()).Contains(searchTermNoDiacritics))
                 .ToList();
         }
+
+        var totalItems = await query.CountAsync();
+        int totalPages = (int)Math.Ceiling((double)totalItems / getBusinessesQuery.PageSize);
+
+      
 
         businesses = businesses
             .Skip((getBusinessesQuery.PageIndex - 1) * getBusinessesQuery.PageSize)
@@ -81,6 +92,41 @@ public class BusinessRepository : IBusinessRepository
         return (businesses, totalPages, totalItems);
     }
 
+    public async Task<(List<Business>?, int, int)> SearchBusinessesByAdminAsync(GetBusinessesByAdminQuery request)
+    {
+        var query = _context.Businesses!.AsQueryable();
+
+        if (!string.IsNullOrEmpty(request.IsVerified.ToString()))
+        {
+            query = query.Where(b => b.IsVerified == request.IsVerified);
+        }
+
+
+        var businesses = await query
+         .OrderBy(b => b.DateOfEstablishment)
+         .AsNoTracking()
+         .ToListAsync();
+
+        if (!string.IsNullOrEmpty(request.SearchTerm))
+        {
+            var s = HttpUtility.UrlDecode(request.SearchTerm); // Giải mã từ URL
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s.ToLower());
+
+            businesses = businesses
+                .Where(b => StringHandlerUtil.RemoveDiacritics(b.Name.ToLower()).Contains(searchTermNoDiacritics))
+                .ToList();
+        }
+
+        var totalItems = await query.CountAsync();
+        int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
+
+        businesses = businesses
+           .Skip((request.PageIndex - 1) * request.PageSize)
+           .Take(request.PageSize)
+           .ToList();
+
+        return (businesses, totalPages, totalItems);
+    }
 
     public async Task<(List<BusinessWaitingVerifyResponse>?, int, int)> SearchWaitingBusinessAsync(GetWaitingVerifyBussinessesQuery request)
     {
@@ -137,4 +183,6 @@ public class BusinessRepository : IBusinessRepository
     {
         _context.Businesses.Update(business);
     }
+
+   
 }
