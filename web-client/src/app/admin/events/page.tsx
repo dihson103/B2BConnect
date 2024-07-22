@@ -5,14 +5,26 @@ import AppEventTable from '@/app/admin/events/_components/table-events'
 import EventTableHeader from '@/app/admin/events/_components/table-header-feature'
 import AppPagination from '@/components/table-pagination'
 import { searchEventAction } from '@/actions/event.actions'
+import { apiErrorHandler } from '@/lib/utils'
+import { handleAuthError } from '@/actions/auth.actions'
 
 type Props = {
   searchParams: SearchEventOption
 }
 
 export default async function EventPage({ searchParams }: Props) {
-  const response = await searchEventAction(searchParams)
-  const events: Event[] = response.data?.data ?? []
+  let events: Event[] = []
+  let totalPages = 0
+
+  try {
+    const response = await searchEventAction(searchParams)
+    events = response.data?.data ?? []
+    totalPages = response.data?.totalPages ?? 0
+  } catch (error: any) {
+    console.error('Failed to fetch eventsgggggggg:', error.message)
+    handleAuthError()
+  }
+
   return (
     <Tabs defaultValue='all'>
       <TabsContent value='all'>
@@ -35,7 +47,7 @@ export default async function EventPage({ searchParams }: Props) {
             {events != null && events.length > 0 ? (
               <AppPagination
                 currentPage={searchParams.pageIndex ? Number(searchParams.pageIndex) : 1}
-                totalPages={response.data.totalPages}
+                totalPages={totalPages}
               />
             ) : null}
           </CardFooter>

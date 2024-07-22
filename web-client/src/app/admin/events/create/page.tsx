@@ -121,6 +121,7 @@ export default function AddNewEventPage() {
                               type='file'
                               style={{ display: 'none' }}
                               accept='image/*'
+                              multiple
                               onChange={(e) => handleUploadPhoto(e)}
                             />
                             <label htmlFor='image' className='flex flex-col items-center cursor-pointer'>

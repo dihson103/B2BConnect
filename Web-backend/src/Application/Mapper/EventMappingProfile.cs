@@ -31,10 +31,15 @@ public class EventMappingProfile : Profile
                 src.StartAt,
                 src.EndAt,
                 src.Location,
-                src.EventMedias.FirstOrDefault(sm => sm.IsMain) == null ? "image_not_found.png" : src.EventMedias.FirstOrDefault(sm => sm.IsMain).Media.Path,
+                src.EventMedias != null && src.EventMedias.Count > 0
+                    ? src.EventMedias.Select(em => new ImageResponse(em.MediaId, em.Media.Path, em.IsMain)).ToList()
+                    : new List<ImageResponse>(),
                 src.Status,
                 src.Status.GetDescription(),
-                src.EventIndustries.Select(x => new IndustryResponse(x.IndustryId, x.Industry.Name)).ToList()
-                ));
+                src.EventIndustries != null
+                    ? src.EventIndustries.Select(x => new IndustryResponse(x.IndustryId, x.Industry.Name)).ToList()
+                    : new List<IndustryResponse>()
+            ));
+
     }
 }

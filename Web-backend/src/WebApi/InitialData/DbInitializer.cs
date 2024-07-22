@@ -69,7 +69,9 @@ public class DbInitializer
                 DateOfEstablishment = new DateOnly(2019, 5, 21),
                 NumberOfEmployee = NumberOfEmployee.FROM_50_TO_100,
                 IsVerified = true,
-                Name = "Công ty ABC"
+                Name = "Công ty ABC",
+                CreatedBy = accounts[1].Id.ToString(),
+                UpdatedDate = DateTime.UtcNow
             },
             new Business()
             {
@@ -78,7 +80,9 @@ public class DbInitializer
                 DateOfEstablishment = new DateOnly(2019, 5, 21),
                 NumberOfEmployee = NumberOfEmployee.FROM_50_TO_100,
                 IsVerified = true,
-                Name = "Công ty EGH"
+                Name = "Công ty EGH",
+                CreatedBy = accounts[2].Id.ToString(),
+                UpdatedDate = DateTime.UtcNow
             }
         };
 

@@ -30,6 +30,8 @@ internal class EventRepository : IEventRepository
     {
         return await _context.Events
             .AsNoTracking()
+            .Include(e => e.EventMedias)
+                .ThenInclude(e => e.Media)
             .Include(e => e.EventIndustries)
                 .ThenInclude(e => e.Industry)
             .SingleOrDefaultAsync(e => e.Id == id);

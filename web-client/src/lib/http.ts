@@ -1,7 +1,9 @@
 import envConfig from '@/config'
+import { LoginResponse } from '@/types/auth.types'
 import { ApiErrorResponse } from '@/types/util.types'
+import { cookies, headers } from 'next/headers'
 
-type CustomOptions = RequestInit & {
+export type CustomOptions = RequestInit & {
   baseUrl?: string | undefined
 }
 
@@ -39,15 +41,23 @@ const request = async <Response>(
     method
   })
 
-  const payload: Response = await res.json()
-
-  console.log('>>payload', payload)
+  console.log('>>>> errr')
 
   if (!res.ok) {
-    var error = payload as ApiErrorResponse
+    if (res.status === 401) {
+      throw new Error('Token hết hạn')
+    }
+
+    const error: any = await res.json()
+
     const message = `${error.status}|${error.message}`
     throw new Error(message)
   }
+
+  console.log('>>>>>>>>>>>><<<<<<<<<<<<<')
+  const payload: Response = await res.json()
+
+  console.log('>>>> payload', payload)
 
   return payload
 }
