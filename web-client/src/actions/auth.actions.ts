@@ -2,25 +2,32 @@
 
 import http from '@/lib/http'
 import { cookies } from 'next/headers'
-import { LoginResponse, LoginSuccessResponse, LoginType, RegisterSuccessResponse, RegisterType } from '@/types/auth.types'
+import {
+  LoginResponse,
+  LoginSuccessResponse,
+  LoginType,
+  RegisterSuccessResponse,
+  RegisterType
+} from '@/types/auth.types'
+import { redirect } from 'next/navigation'
 
 export const loginAction = async (body: LoginType) => {
-  let response;
+  let response
   try {
     response = await http.post<LoginSuccessResponse>('/auth/login', body)
     if (response.status === 200 && response.data) {
       cookies().set({
-        name: "loginResponse", 
+        name: 'loginResponse',
         value: JSON.stringify(response.data),
         httpOnly: true
       })
     } else {
-      throw new Error('Login failed: Unexpected response');
+      throw new Error('Login failed: Unexpected response')
     }
   } catch (error) {
     console.error('Login request failed:', error)
     throw error
-}
+  }
   return response
 }
 
@@ -29,28 +36,32 @@ export const registerAction = (body: RegisterType) => {
 }
 
 export const logoutAction = () => {
-  const loginResponse = getLoginResponseCookie();
-  const userId = loginResponse?.account?.id; 
-  console.log('userId = ' + userId);
+  const loginResponse = getLoginResponseCookie()
+  const userId = loginResponse?.account?.id
+  console.log('userId = ' + userId)
   if (userId) {
-    http.delete<LoginSuccessResponse>(`/auth/logout/${userId}`)
-    .then(response => {
-      cookies().delete('loginResponse');
+    http.delete<LoginSuccessResponse>(`/auth/logout/${userId}`).then((response) => {
+      cookies().delete('loginResponse')
     })
   } else {
     console.error('User ID not found in cookies')
   }
 }
 
-export const getLoginResponseCookie = () : LoginResponse | null => {
+export const getLoginResponseCookie = (): LoginResponse | null => {
   try {
-    const loginResponse =  cookies().get('loginResponse')?.value;
+    const loginResponse = cookies().get('loginResponse')?.value
     if (!loginResponse) {
-      return null;
+      return null
     }
-    return JSON.parse(loginResponse);
+    return JSON.parse(loginResponse)
   } catch (err) {
-    console.error('Error parsing loginResponse cookie:', err);
-    return null;
+    console.error('Error parsing loginResponse cookie:', err)
+    return null
   }
+}
+
+export const handleAuthError = () => {
+  cookies().delete('loginResponse')
+  redirect('/login')
 }

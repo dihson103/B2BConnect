@@ -16,7 +16,7 @@ export type Event = {
 export type SearchEvent = SearchResponse<Event[] | null>
 
 export type SearchEventOption = {
-  searchTearm: string | null
+  searchTerm: string | null
   status: number
   pageIndex: number
   pageSize: number

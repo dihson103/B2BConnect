@@ -9,7 +9,7 @@ public record SingleEventResponse(
     DateTime StartAt,
     DateTime EndAt,
     string Location,
-    string Image,
+    List<ImageResponse> Images,
     EventStatus Status,
     string StatusDescription,
     List<IndustryResponse> Industries);
