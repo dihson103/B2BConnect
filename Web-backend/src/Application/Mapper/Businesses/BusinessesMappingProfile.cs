@@ -16,7 +16,7 @@ public class BusinessesMappingProfile : Profile
                 src.WebSite,
                 src.AvatarImage,
                 src.CoverImage,
-                src.NumberOfEmployee,
+                src.NumberOfEmployee.ToString(),
                 src.IsVerified
             ));
     }

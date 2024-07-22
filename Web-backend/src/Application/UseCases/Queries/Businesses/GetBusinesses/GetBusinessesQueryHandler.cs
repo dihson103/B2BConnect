@@ -7,7 +7,7 @@ using Contract.Services.Business.GetBusinesses;
 using Contract.Services.Business.Share;
 
 namespace Application.UseCases.Queries.Businesses.GetBusinesses;
-public sealed class GetBusinessQueryHandler(IBusinessRepository _businessRepository, IMapper _mapper) :
+public sealed class GetBusinessesQueryHandler(IBusinessRepository _businessRepository, IMapper _mapper) :
     IQueryHandler<GetBusinessesQuery, SearchResponse<List<BusinessesResponse>>>
 {
     public async Task<Result.Success<SearchResponse<List<BusinessesResponse>>>> Handle(GetBusinessesQuery request, 

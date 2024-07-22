@@ -5,7 +5,6 @@ using Contract.Services.Business.GetBusinesses;
 using Contract.Services.Business.Share;
 using Contract.Services.Verification.Share;
 using Domain.Entities;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
@@ -42,16 +41,7 @@ public class BusinessRepository : IBusinessRepository
 
     public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesQuery getBusinessesQuery)
     {
-        var query = _context.Businesses!.Where(b => b!.IsVerified == getBusinessesQuery.IsVerified);
-
-        var searchTerm = getBusinessesQuery.SearchTerm;
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            var s = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Giải mã từ URL
-            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s).ToLower(); // Chuyển đổi không dấu và chữ thường
-
-            query = query.Where(b => b.Name.ToLower().Contains(searchTermNoDiacritics));
-        }
+        var query = _context.Businesses!.Where(b => b.IsVerified == getBusinessesQuery.IsVerified);
 
         if (getBusinessesQuery.IndustryIds != null && getBusinessesQuery.IndustryIds.Any())
         {
@@ -59,7 +49,6 @@ public class BusinessRepository : IBusinessRepository
                 .Where(b => b.Sectors!
                     .Any(s => getBusinessesQuery.IndustryIds.Contains(s.IndustryId)));
         }
-
 
         if (getBusinessesQuery.NumberOfEmployee.HasValue)
         {
@@ -71,14 +60,27 @@ public class BusinessRepository : IBusinessRepository
 
         var businesses = await query
             .OrderBy(b => b.DateOfEstablishment)
+            .AsNoTracking()
+            .ToListAsync();
+
+        if (!string.IsNullOrEmpty(getBusinessesQuery.SearchTerm))
+        {
+            var s = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Giải mã từ URL
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s.ToLower()); 
+
+            businesses = businesses
+                .Where(b => StringHandlerUtil.RemoveDiacritics(b.Name.ToLower()).Contains(searchTermNoDiacritics))
+                .ToList();
+        }
+
+        businesses = businesses
             .Skip((getBusinessesQuery.PageIndex - 1) * getBusinessesQuery.PageSize)
             .Take(getBusinessesQuery.PageSize)
-            .AsNoTracking()
-            .AsSingleQuery()
-            .ToListAsync();
+            .ToList();
 
         return (businesses, totalPages, totalItems);
     }
+
 
     public async Task<(List<BusinessWaitingVerifyResponse>?, int, int)> SearchWaitingBusinessAsync(GetWaitingVerifyBussinessesQuery request)
     {
@@ -96,8 +98,8 @@ public class BusinessRepository : IBusinessRepository
         if (!string.IsNullOrWhiteSpace(request.SearchTerm))
         {
             var searchTerm = HttpUtility.UrlDecode(request.SearchTerm); // Giải mã từ URL
-            
-            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(searchTerm).ToLower(); 
+
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(searchTerm).ToLower();
 
             query = query.Where(bv => bv.Business.Name.ToLower().Contains(searchTermNoDiacritics));
         }

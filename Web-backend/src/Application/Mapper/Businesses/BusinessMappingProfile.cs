@@ -19,7 +19,7 @@ public class BusinessMappingProfile : Profile
                 src.WebSite,
                 src.AvatarImage,
                 src.CoverImage,
-                src.NumberOfEmployee,
+                src.NumberOfEmployee.ToString(),
                 src.IsVerified,
                  src.Account != null ? new AccountResponse(
                         src.Account.Email,
