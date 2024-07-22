@@ -16,12 +16,11 @@ public class BusinessApiEndpoints : CarterModule
     }
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet(string.Empty, async (ISender sender, [FromQuery] string? searchTerm,
+        app.MapGet("byUser", async (ISender sender, [FromQuery] string? searchTerm,
             [FromQuery] string? industryIds, [FromQuery] NumberOfEmployee? numberOfEmployee, 
-            [FromQuery] bool isVerified = false, [FromQuery] int pageIndex = 1, 
+             [FromQuery] int pageIndex = 1, 
             [FromQuery] int pageSize = 10) =>
         {
-            // Parse industryIds from query string
             List<Guid>? parsedIndustryIds = null;
             if (!string.IsNullOrEmpty(industryIds))
             {
@@ -32,14 +31,24 @@ public class BusinessApiEndpoints : CarterModule
                     .ToList();
             }
 
-            var getBusinessesQuery = new GetBusinessesQuery(
+            var getBusinessesQuery = new GetBusinessesByUserQuery(
                 SearchTerm: searchTerm,
                 IndustryIds: parsedIndustryIds,
                 NumberOfEmployee: numberOfEmployee,
-                IsVerified: isVerified,
                 PageIndex: pageIndex,
                 PageSize: pageSize
             );
+
+            var result = await sender.Send(getBusinessesQuery);
+
+            return Results.Ok(result);
+        }).WithOpenApi(x => new OpenApiOperation(x)
+        {
+            Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
+        });
+
+        app.MapGet("byAdmin", async (ISender sender, [AsParameters] GetBusinessesByAdminQuery getBusinessesQuery) =>
+        {
 
             var result = await sender.Send(getBusinessesQuery);
 

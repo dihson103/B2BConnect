@@ -7,14 +7,12 @@ using Contract.Services.Business.GetBusinesses;
 using Contract.Services.Business.Share;
 
 namespace Application.UseCases.Queries.Businesses.GetBusinesses;
-public sealed class GetBusinessesQueryHandler(IBusinessRepository _businessRepository, IMapper _mapper) :
-    IQueryHandler<GetBusinessesQuery, SearchResponse<List<BusinessesResponse>>>
+public class GetBusinessesByAdminQueryHandler(IBusinessRepository _businessRepository, IMapper _mapper) :
+    IQueryHandler<GetBusinessesByAdminQuery, SearchResponse<List<BusinessesResponse>>>
 {
-    public async Task<Result.Success<SearchResponse<List<BusinessesResponse>>>> Handle(GetBusinessesQuery request, 
-        CancellationToken cancellationToken)
+    public async Task<Result.Success<SearchResponse<List<BusinessesResponse>>>> Handle(GetBusinessesByAdminQuery request, CancellationToken cancellationToken)
     {
-
-        var result = await _businessRepository.SearchBusinessAsync(request);
+        var result = await _businessRepository.SearchBusinessesByAdminAsync(request);
 
         var businesses = result.Item1;
         var totalPage = result.Item2;
