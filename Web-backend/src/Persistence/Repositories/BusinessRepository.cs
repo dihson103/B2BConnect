@@ -21,6 +21,14 @@ public class BusinessRepository : IBusinessRepository
         _context.Businesses.Add(business);
     }
 
+    public async Task<Business> getByAccountIdAsync(Guid id)
+    {
+        return await _context.Businesses
+                    .AsNoTracking()
+                     .AsSplitQuery()
+                    . SingleOrDefaultAsync(b => b.AccountId == id);
+    }
+
     public async Task<Business> GetByIdAsync(Guid id)
     {
         return await _context.Businesses
@@ -30,7 +38,7 @@ public class BusinessRepository : IBusinessRepository
                      .Include(e => e.Account)
                     .Include(e => e.Branches!)
                     .Include(e => e.Sectors)
-                                .ThenInclude(s => s.Industry) 
+                                .ThenInclude(s => s.Industry)
                     .SingleOrDefaultAsync(e => e.Id == id);
     }
 
@@ -82,7 +90,7 @@ public class BusinessRepository : IBusinessRepository
         var totalItems = await query.CountAsync();
         int totalPages = (int)Math.Ceiling((double)totalItems / getBusinessesQuery.PageSize);
 
-      
+
 
         businesses = businesses
             .Skip((getBusinessesQuery.PageIndex - 1) * getBusinessesQuery.PageSize)
@@ -184,5 +192,5 @@ public class BusinessRepository : IBusinessRepository
         _context.Businesses.Update(business);
     }
 
-   
+
 }

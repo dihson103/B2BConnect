@@ -37,6 +37,18 @@ public class BranchRepository : IBranchRepository
         }
     }
 
+    public void DeleteMainBranchOfBusiness(Guid businessId)
+    {
+        var mainBranch = _context.Branches
+            .Where(b => b.BusinessId == businessId && b.IsMainBranch)
+            .SingleOrDefault();
+
+        if (mainBranch != null)
+        {
+            _context.Branches.Remove(mainBranch);
+        }
+    }
+
     public async Task<List<Branch>> GetBranchesAsync(GetBranchesQuery getBranchesQuery)
     {
         var query = _context.Branches!.Where(b => b!.BusinessId == getBranchesQuery.BusinessId);

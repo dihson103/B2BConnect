@@ -1,4 +1,5 @@
 ﻿using Contract.Services.Verification.Share;
+using Contract.Services.Verifications.Create;
 using Domain.Abstractioins.Enities;
 
 namespace Domain.Entities;
@@ -12,4 +13,18 @@ public class Verification : EntityAuditBase<Guid>
     public DateTime? CheckedDate { get; set; }
     public BusinessType BusinessType { get; set; }
     public Business Business { get; set; }
+
+    public static Verification Create(CreateVerificationCommand command)
+    {
+        return new Verification()
+        {
+            BusinessLicense = command.businessLicense,
+            BusinessType = command.businessType,
+            IsChecked = false,
+            Note = command.note,
+            BusinessId = command.BusinessId,
+            Id = Guid.NewGuid(),
+            CheckedDate = DateTime.UtcNow,
+        };
+    }
 }

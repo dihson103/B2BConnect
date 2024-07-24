@@ -31,6 +31,16 @@ public class Representative : EntityBase<Guid>
         };
     }
 
+    public void Update(Representative re)
+    {
+        Id = re.Id;
+        Address = re.Address;
+        Fullname = re.Fullname;
+        GovernmentId = re.GovernmentId;
+        Dob = re.Dob;
+        BusinessId = re.BusinessId;
+    }
+
     public void Update(CreateRepresentativeCommand command)
     {
         GovernmentId = command.GovernmentId;

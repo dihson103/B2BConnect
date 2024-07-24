@@ -42,6 +42,8 @@ builder.Services.AddSwaggerGen(options =>
     options.AddFormFile();
 });
 
+
+
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)

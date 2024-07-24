@@ -12,4 +12,5 @@ public interface IBranchRepository
     Task<Branch> GetByIdAsync(Guid id);
     void AddRange(List<Branch> branches);
     void DeleteByBusinessId(Guid id);
+    void DeleteMainBranchOfBusiness(Guid businessId);
 }

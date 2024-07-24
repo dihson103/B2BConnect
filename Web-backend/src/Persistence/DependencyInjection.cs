@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Application.UseCases.Commands.Verifications.Create;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IEventMediaRepository, EventMediaRepository>();
         services.AddScoped<IRepresentativeRepository, RepresentativeRepository>();
+        services.AddScoped<IVerificationRepository, VerificationRepository>();
 
 
         return services;

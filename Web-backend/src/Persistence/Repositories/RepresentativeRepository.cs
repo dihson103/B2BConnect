@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 public class RepresentativeRepository : IRepresentativeRepository
@@ -14,6 +15,11 @@ public class RepresentativeRepository : IRepresentativeRepository
         _context.Representatives.Add(representative);
     }
 
+    public void Attach(Representative re)
+    {
+        _context.Set<Representative>().Attach(re);
+    }
+
     public void DeleteByBusinessId(Guid businessId)
     {
         var representatives = _context.Representatives.Where(r => r.BusinessId == businessId);
@@ -24,8 +30,28 @@ public class RepresentativeRepository : IRepresentativeRepository
         }
     }
 
+    public async Task<Representative> GetByBusinessId(Guid businessId)
+    {
+        return await _context.Representatives
+                .AsNoTracking()
+                .SingleOrDefaultAsync(r => r.BusinessId == businessId);
+    }
+
     public void Update(Representative re)
     {
-        _context.Representatives.Update(re);
+        // Ensure the entity is in the context and is being tracked
+        var existingEntity = _context.Representatives.Local
+            .FirstOrDefault(r => r.Id == re.Id);
+
+        if (existingEntity != null)
+        {
+            // If already tracked, update its properties
+            _context.Entry(existingEntity).CurrentValues.SetValues(re);
+        }
+        else
+        {
+            // Attach if not tracked yet
+            _context.Representatives.Update(re);
+        }
     }
 }

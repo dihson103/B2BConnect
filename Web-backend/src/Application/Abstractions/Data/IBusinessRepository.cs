@@ -13,4 +13,5 @@ public interface IBusinessRepository
     void Update(Business business);
     Task<(List<BusinessWaitingVerifyResponse>?, int, int)> SearchWaitingBusinessAsync(GetWaitingVerifyBussinessesQuery request);
     Task<(List<Business>?, int, int)> SearchBusinessesByAdminAsync(GetBusinessesByAdminQuery request);
+    Task<Business> getByAccountIdAsync(Guid id);
 }

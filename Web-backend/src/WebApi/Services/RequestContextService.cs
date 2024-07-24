@@ -12,4 +12,6 @@ public class RequestContextService : IRequestContext
     }
 
     public string UserLoggedIn => _httpContext?.User?.FindFirst("UserID")?.Value ?? string.Empty;
+
+    public bool IsAdminLogged => _httpContext?.User?.FindFirst("isAdmin")?.Value == "true" ? true : false;
 }
