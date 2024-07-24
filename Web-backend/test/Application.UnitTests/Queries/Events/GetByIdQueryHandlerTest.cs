@@ -49,7 +49,7 @@ public class GetByIdQueryHandlerTest
             StartAt: new DateTime(2024, 8, 1, 9, 0, 0),
             EndAt: new DateTime(2024, 8, 1, 17, 0, 0),
             Location: "San Francisco, CA",
-            Image: "https://example.com/images/tech-conference-2024.jpg",
+            null,
             Status: EventStatus.CANCELLED,
             StatusDescription: "The event is currently ongoing.",
             Industries: new List<IndustryResponse> { fakeIndustry1, fakeIndustry2 }

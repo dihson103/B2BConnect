@@ -14,8 +14,9 @@ public class UpdateEventValidator : AbstractValidator<UpdateEventRequest>
         RuleFor(req => req.Location)
             .NotEmpty().WithMessage("Địa điểm tổ chức không được để trống");
 
-        RuleFor(req => req.Image)
-            .NotEmpty().WithMessage("Sự kiện phải có ảnh");
+        RuleFor(req => req.ImageRequests)
+            .Must((requests) => requests != null && requests.Count > 0).WithMessage("Sự kiện phải có ảnh")
+            .Must((requests) => requests.Count(req => req.isMain) == 1).WithMessage("Sự kiện phải có duy nhất ảnh chính");
 
         RuleFor(req => req.StartAt)
             .Must((startDate) => DateUtil.FromDateTimeClientToDateTimeUtc(startDate) > DateTime.UtcNow)

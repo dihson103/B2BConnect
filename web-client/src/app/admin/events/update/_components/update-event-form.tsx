@@ -1,17 +1,16 @@
 'use client'
 
-import ImageDisplay from '@/components/image-choosed-display'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { BadgeMinus, Pencil, PlusCircle, Upload } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { BadgeMinus } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateEventFormType, CreateEventSchema, UpdateEventFormType, UpdateEventSchema } from '@/rules/event.rules'
+import { UpdateEventFormType, UpdateEventSchema } from '@/rules/event.rules'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Event, UpdateEventType } from '@/types/event.types'
+import { EventDetail, ImageRequest, UpdateEventType } from '@/types/event.types'
 import { convertDateTimeToDisPlayInUpdateForm } from '@/lib/date'
 import { IndustryResponse } from '@/types/industry.types'
 import { Label } from '@/components/ui/label'
@@ -19,19 +18,25 @@ import { Badge } from '@/components/ui/badge'
 import IndustryComboboxPopover from '@/components/combobox-industry-popover'
 import { apiErrorHandler, apiResultHandler } from '@/lib/utils'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import UploadFiles from '@/components/upload-file'
 import { uploadFileAction } from '@/actions/file.action'
 import { updateEventAction } from '@/actions/event.actions'
+import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/ui/use-toast'
 
 type Props = {
-  data: Event
+  data: EventDetail
   industries: IndustryResponse[]
 }
 
 export default function UpdateEventPage({ data, industries }: Props) {
-  const [image, setImage] = useState<string | File | null>(`http://localhost:7001/api/files/${data.image}`)
+  const [files, setFiles] = useState<(File | string)[]>(data.images.map((i) => i.path))
+  const [mainImageIndex, setMainImageIndex] = useState<number | null>(data.images.findIndex((image) => image.isMain))
   const [fileMessage, setFileMessage] = useState<string | null>(null)
   const [industriesChoosed, setIndustriesChoosed] = useState<IndustryResponse[] | null>(industries)
   const [industryMessage, setIndustryMessage] = useState<string | null>(null)
+  const router = useRouter()
+  const { toast } = useToast()
 
   const form = useForm<UpdateEventFormType>({
     resolver: zodResolver(UpdateEventSchema),
@@ -41,23 +46,12 @@ export default function UpdateEventPage({ data, industries }: Props) {
       endDate: convertDateTimeToDisPlayInUpdateForm(data.endAt),
       location: data.location,
       description: data.description,
-      image: data.image,
       status: data.status.toString()
     }
   })
 
-  const handleUploadPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImage(e.target.files ? e.target.files[0] : null)
-    setFileMessage(null)
-  }
-
-  const handleDelete = (index: number) => {
-    setImage(null)
-    setFileMessage('Bạn cần nhập ảnh sự kiện')
-  }
-
   const onSubmit = async (formData: UpdateEventFormType) => {
-    if (image == null) {
+    if (files.length == 0) {
       setFileMessage('Bạn cần nhập ảnh sự kiện')
       return
     }
@@ -68,29 +62,49 @@ export default function UpdateEventPage({ data, industries }: Props) {
     }
 
     try {
+      const imageBody = new FormData()
+      files.forEach((file) => {
+        if (file instanceof File) {
+          imageBody.append('receivedFiles', file)
+        }
+      })
+
+      const response = await uploadFileAction(imageBody)
+      const uploadedImages = response.data
+
+      let fileIndex = -1
+      const imageRequests: ImageRequest[] = files.map((file, index) => {
+        if (file instanceof File) fileIndex++
+        return {
+          image: file instanceof File ? uploadedImages[fileIndex] : file,
+          isMain: index === mainImageIndex
+        }
+      })
+
+      console.log('image', imageRequests)
+
       const body: UpdateEventType = {
         name: formData.name,
         description: formData.description,
         location: formData.location,
         status: Number(formData.status),
-        image: data.image,
+        imageRequests: imageRequests,
         startAt: new Date(formData.startDate).toISOString(),
         endAt: new Date(formData.endDate).toISOString(),
         industryIds: industriesChoosed.map((industry) => industry.id)
-      }
-      if (image instanceof File) {
-        const imageBody = new FormData()
-        imageBody.append('file', image)
-        const response = await uploadFileAction(imageBody)
-        body.image = response.data.fileName
-        console.log('>>>', response.data.fileName)
       }
       console.log('<<<', body)
       const res = await updateEventAction(data.id, body)
 
       apiResultHandler(res)
+      router.push('/admin/events')
     } catch (error: any) {
-      apiErrorHandler(error.message)
+      toast({
+        title: 'Lỗi',
+        description: error.message ?? 'Lỗi không xác định',
+        duration: 5000,
+        variant: 'destructive'
+      })
     }
   }
 
@@ -111,88 +125,53 @@ export default function UpdateEventPage({ data, industries }: Props) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='w-full flex flex-col gap-4'>
             <div className='flex flex-col gap-6'>
-              <div className='grid grid-cols-1 gap-6 md:grid-cols-7'>
-                <Card className='w-full h-full md:col-span-2 col-span-1 relative'>
-                  <div className='w-full h-full flex justify-center items-center p-3'>
-                    {image === null ? (
-                      <div className='w-full h-full flex justify-center items-center'>
-                        <input
-                          id='image'
-                          type='file'
-                          style={{ display: 'none' }}
-                          accept='image/*'
-                          onChange={(e) => handleUploadPhoto(e)}
-                        />
-                        <label htmlFor='image' className='flex flex-col items-center cursor-pointer'>
-                          <Upload size={70} className='bg-primary-backgroudPrimary rounded-md p-5 mb-2' />
-                          <span className='text-l text-gray-500 font-medium'>Hãy tải ảnh lên</span>
-                        </label>
-                      </div>
-                    ) : (
-                      <div className='relative w-full h-full flex justify-center items-center'>
-                        <ImageDisplay
-                          imageURLs={[image].map((i) => (i instanceof File ? URL.createObjectURL(i) : i))}
-                          handleDelete={handleDelete}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <span className='text-[0.8rem] font-medium text-destructive'>{fileMessage}</span>
-                </Card>
-                <Card className='md:col-span-5 col-span-1'>
-                  <CardContent className='relative'>
-                    <div className='grid grid-cols-1 gap-2 mt-4'>
-                      <FormField
-                        control={form.control}
-                        name='name'
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel className='text-primary-backgroudPrimary'>Tên sự kiện</FormLabel>
-                              <FormControl>
-                                <Input type='text' placeholder='Tên sự kiện' {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )
-                        }}
-                      />
+              <FormField
+                control={form.control}
+                name='name'
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel className='text-primary-backgroudPrimary'>Tên sự kiện</FormLabel>
+                      <FormControl>
+                        <Input type='text' placeholder='Tên sự kiện' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )
+                }}
+              />
 
-                      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                        <FormField
-                          control={form.control}
-                          name='startDate'
-                          render={({ field }) => {
-                            return (
-                              <FormItem>
-                                <FormLabel className='text-primary-backgroudPrimary'>Ngày bắt đầu</FormLabel>
-                                <FormControl>
-                                  <Input type='datetime-local' {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )
-                          }}
-                        />
-                        <FormField
-                          control={form.control}
-                          name='endDate'
-                          render={({ field }) => {
-                            return (
-                              <FormItem>
-                                <FormLabel className='text-primary-backgroudPrimary'>Ngày kết thúc</FormLabel>
-                                <FormControl>
-                                  <Input type='datetime-local' {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <FormField
+                  control={form.control}
+                  name='startDate'
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel className='text-primary-backgroudPrimary'>Ngày bắt đầu</FormLabel>
+                        <FormControl>
+                          <Input type='datetime-local' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name='endDate'
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel className='text-primary-backgroudPrimary'>Ngày kết thúc</FormLabel>
+                        <FormControl>
+                          <Input type='datetime-local' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
+                />
               </div>
               <FormField
                 control={form.control}
@@ -273,6 +252,22 @@ export default function UpdateEventPage({ data, industries }: Props) {
                   </FormItem>
                 )}
               />
+
+              <div className='grid gap-2'>
+                <Label htmlFor='email' className='flex items-center'>
+                  Ảnh sự kiện <p className='ml-1 text-gray-500'>(chọn ảnh chính)</p>
+                </Label>
+
+                <UploadFiles
+                  files={files}
+                  setFiles={setFiles}
+                  mainImageIndex={mainImageIndex}
+                  setMainImageIndex={setMainImageIndex}
+                />
+                {files.length == 0 ? (
+                  <span className='text-[0.8rem] font-medium text-destructive'>{fileMessage}</span>
+                ) : null}
+              </div>
 
               <FormField
                 control={form.control}

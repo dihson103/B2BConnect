@@ -1,7 +1,6 @@
+import { handleAuthError } from '@/actions/auth.actions'
 import envConfig from '@/config'
-import { LoginResponse } from '@/types/auth.types'
-import { ApiErrorResponse } from '@/types/util.types'
-import { cookies, headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export type CustomOptions = RequestInit & {
   baseUrl?: string | undefined
@@ -45,7 +44,8 @@ const request = async <Response>(
 
   if (!res.ok) {
     if (res.status === 401) {
-      throw new Error('Token hết hạn')
+      // await handleAuthError()
+      throw new Error(`401|Token hết hạn`)
     }
 
     const error: any = await res.json()
@@ -54,7 +54,6 @@ const request = async <Response>(
     throw new Error(message)
   }
 
-  console.log('>>>>>>>>>>>><<<<<<<<<<<<<')
   const payload: Response = await res.json()
 
   console.log('>>>> payload', payload)

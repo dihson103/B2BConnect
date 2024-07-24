@@ -1,6 +1,7 @@
 import envConfig from '@/config'
 import { NextResponse } from 'next/server'
 import { getLoginResponseCookie } from './actions/auth.actions'
+import { cookies } from 'next/headers'
 
 export default async function middleware(request: Request) {
   if (request.url === `${envConfig.BASE_URL}/`) {

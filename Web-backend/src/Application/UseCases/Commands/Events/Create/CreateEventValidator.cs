@@ -14,9 +14,6 @@ public class CreateEventValidator : AbstractValidator<CreateEventCommand>
         RuleFor(req => req.Location)
             .NotEmpty().WithMessage("Địa điểm tổ chức không được để trống");
 
-        RuleFor(req => req.Image)
-            .NotEmpty().WithMessage("Sự kiện phải có ảnh");
-
         RuleFor(req => req.StartAt)
             .Must((startDate) => DateUtil.FromDateTimeClientToDateTimeUtc(startDate) > DateTime.UtcNow)
             .WithMessage("Ngày bắt đầu phải sau ngày hiện tại");

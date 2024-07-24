@@ -30,7 +30,6 @@ public class GetByEventIdAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null,
                 null
                 ), "099999"
@@ -42,7 +41,6 @@ public class GetByEventIdAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null,
                 null
                 ), "09977"
@@ -82,7 +80,6 @@ public class GetByEventIdAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null,
                 null
                 ), "09878"
