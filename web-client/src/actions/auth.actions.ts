@@ -1,7 +1,7 @@
 'use server'
 
 import http from '@/lib/http'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import {
   LoginResponse,
   LoginSuccessResponse,
@@ -19,7 +19,7 @@ export const loginAction = async (body: LoginType) => {
       cookies().set({
         name: 'loginResponse',
         value: JSON.stringify(response.data),
-        httpOnly: true
+        httpOnly: false
       })
     } else {
       throw new Error('Login failed: Unexpected response')
@@ -35,19 +35,6 @@ export const registerAction = (body: RegisterType) => {
   return http.post<RegisterSuccessResponse>('/auth/register', body)
 }
 
-export const logoutAction = () => {
-  const loginResponse = getLoginResponseCookie()
-  const userId = loginResponse?.account?.id
-  console.log('userId = ' + userId)
-  if (userId) {
-    http.delete<LoginSuccessResponse>(`/auth/logout/${userId}`).then((response) => {
-      cookies().delete('loginResponse')
-    })
-  } else {
-    console.error('User ID not found in cookies')
-  }
-}
-
 export const getLoginResponseCookie = (): LoginResponse | null => {
   try {
     const loginResponse = cookies().get('loginResponse')?.value
@@ -61,7 +48,13 @@ export const getLoginResponseCookie = (): LoginResponse | null => {
   }
 }
 
-export const handleAuthError = () => {
-  cookies().delete('loginResponse')
-  redirect('/login')
+export const handleAuthError = async () => {
+  console.log('ddddddddddddd-=============')
+  await fetch('http://localhost:3000/api/auth/test', {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
 }
+
+export const deleteAuthCookie = () => {}

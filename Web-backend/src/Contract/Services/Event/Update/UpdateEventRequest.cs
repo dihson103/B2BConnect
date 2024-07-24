@@ -1,4 +1,5 @@
-﻿using Contract.Services.Event.Share;
+﻿using Contract.Services.Event.GetById;
+using Contract.Services.Event.Share;
 
 namespace Contract.Services.Event.Update;
 public record UpdateEventRequest(
@@ -7,7 +8,7 @@ public record UpdateEventRequest(
     DateTime StartAt,
     DateTime EndAt,
     string Location,
-    string Image,
+    List<EventImageRequest> ImageRequests,
     List<Guid> IndustryIds,
     EventStatus Status);
 

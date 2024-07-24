@@ -8,8 +8,8 @@ import { Label } from '@/components/ui/label'
 import { loginAction } from '@/actions/auth.actions'
 import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
-import { apiErrorHandler } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { apiErrorHandler } from '@/lib/utils'
 
 export default function LoginForm() {
   const { toast } = useToast()
@@ -25,15 +25,20 @@ export default function LoginForm() {
 
     loginAction(data)
       .then((data) => {
+        router.push(data.data.account.isAdmin ? '/admin/businesses' : '/home')
         toast({
           title: 'Đăng nhập thành công',
           description: `Chào mừng ${data.data.account.email}`,
           duration: 5000
         })
-        router.push(data.data.account.isAdmin ? 'admin/businesses' : 'home')
       })
       .catch((error: Error) => {
-        apiErrorHandler(error.message)
+        toast({
+          title: 'Lỗi',
+          description: error.message ?? 'Lỗi không xác định',
+          duration: 5000,
+          variant: 'destructive'
+        })
       })
   }
 

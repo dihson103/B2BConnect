@@ -14,6 +14,7 @@ import AppSideBar from '@/app/admin/_components/side-bar'
 import AppBreadcrumb from '@/app/admin/_components/breadcrumb'
 import { Metadata } from 'next'
 import AppSideBarMobile from '@/app/admin/_components/side-bar-mobile'
+import LogoutButton from '@/app/admin/_components/logout-button'
 
 export const metadata: Metadata = {
   title: 'Trang quản lý',
@@ -59,7 +60,7 @@ export default async function AdminLayout({
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <LogoutButton />
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

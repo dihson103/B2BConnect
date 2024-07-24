@@ -30,7 +30,6 @@ public class UpdateEventTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null, null
             ),
             "097733"
@@ -65,7 +64,6 @@ public class UpdateEventTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null, null
             ),
             "0987333"

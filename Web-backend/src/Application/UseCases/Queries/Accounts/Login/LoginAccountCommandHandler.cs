@@ -21,11 +21,11 @@ public class LoginAccountCommandHandler(
     public static readonly string Redis_Prefix = "USER-";
     public async Task<Result.Success<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var account = await _accountRepository.LoginAsync(request.Email) ?? throw new MyUnauthorizedException("Sai mật khẩu hoặc password.");
+        var account = await _accountRepository.LoginAsync(request.Email) ?? throw new MyBadRequestException("Sai mật khẩu hoặc password.");
         var isPasswordValid = _passwordService.IsVerify(account!.Password, request.Password);
         if (!isPasswordValid)
         {
-            throw new MyUnauthorizedException("Sai mật khẩu hoặc password.");
+            throw new MyBadRequestException("Sai mật khẩu hoặc password.");
         }
         var accessToken = _jwtService.GenerateAccessToken(account);
         var refreshToken = _jwtService.GenerateRefreshToken();

@@ -23,6 +23,7 @@ internal class EventRepository : IEventRepository
     {
         return await _context.Events
             .Include(e => e.EventIndustries)
+            .Include(e => e.EventMedias)
             .SingleOrDefaultAsync(e => e.Id == id);
     }
 

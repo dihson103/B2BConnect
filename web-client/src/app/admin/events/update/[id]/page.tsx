@@ -4,6 +4,7 @@ import NotFoundPage from '@/components/not-found'
 import { apiErrorHandler } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
+import { redirect } from 'next/navigation'
 
 export default async function EventDetailUpdatePage({ params }: { params: { id: string } }) {
   try {
@@ -36,6 +37,8 @@ export default async function EventDetailUpdatePage({ params }: { params: { id: 
       )
     } else if (status === '400') {
       return <NotFoundPage />
+    } else if (status === '401') {
+      redirect('/api/auth/test')
     } else {
       apiErrorHandler(message)
     }

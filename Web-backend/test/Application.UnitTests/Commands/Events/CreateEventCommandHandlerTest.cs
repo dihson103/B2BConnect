@@ -53,7 +53,6 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(9),
             DateTime.UtcNow.AddHours(10),
             "Location",
-            "Image",
             industryIds,
             null);
 
@@ -80,7 +79,6 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(9),
             DateTime.UtcNow.AddHours(10),
             "Location",
-            "Image",
             new List<Guid> { Guid.NewGuid() },
             null);
 
@@ -103,7 +101,6 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(4),
             DateTime.UtcNow.AddHours(10),
             "Location",
-            "Image",
             new List<Guid> { Guid.NewGuid() },
             null);
 
@@ -126,7 +123,6 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(11),
             DateTime.UtcNow.AddHours(10),
             "Location",
-            "Image",
             new List<Guid> { Guid.NewGuid() },
             null);
 
@@ -141,14 +137,10 @@ public class CreateEventCommandHandlerTest
     }
 
     [Theory]
-    [InlineData("", "location", "image")]
-    [InlineData("name", "", "image")]
-    [InlineData("name", "location", "")]
-    [InlineData("name", "", "")]
-    [InlineData("", "", "image")]
-    [InlineData("", "location", "")]
-    [InlineData("", "", "")]
-    public async Task Handler_ShouldThrowMyException_WhenValidationFails(string name, string location, string image)
+    [InlineData("", "location")]
+    [InlineData("name", "")]
+    [InlineData("", "")]
+    public async Task Handler_ShouldThrowMyException_WhenValidationFails(string name, string location)
     {
         var createEventCommand = new CreateEventCommand(
             name,
@@ -156,7 +148,6 @@ public class CreateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(8),
             DateTime.UtcNow.AddHours(9),
             location,
-            image,
             new List<Guid> { Guid.NewGuid() },
             null);
 

@@ -1,3 +1,5 @@
+'use server'
+
 import { Event, SearchEventOption } from '@/types/event.types'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
@@ -5,8 +7,9 @@ import AppEventTable from '@/app/admin/events/_components/table-events'
 import EventTableHeader from '@/app/admin/events/_components/table-header-feature'
 import AppPagination from '@/components/table-pagination'
 import { searchEventAction } from '@/actions/event.actions'
+import { deleteAuthCookie, handleAuthError } from '@/actions/auth.actions'
+import { redirect } from 'next/navigation'
 import { apiErrorHandler } from '@/lib/utils'
-import { handleAuthError } from '@/actions/auth.actions'
 
 type Props = {
   searchParams: SearchEventOption
@@ -22,7 +25,11 @@ export default async function EventPage({ searchParams }: Props) {
     totalPages = response.data?.totalPages ?? 0
   } catch (error: any) {
     console.error('Failed to fetch eventsgggggggg:', error.message)
-    handleAuthError()
+    const message = error.message as string
+    if (message.startsWith('401|')) {
+      redirect('/api/auth/test')
+    }
+    apiErrorHandler(error)
   }
 
   return (
