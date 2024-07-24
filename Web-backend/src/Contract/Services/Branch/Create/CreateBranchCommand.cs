@@ -5,6 +5,6 @@ public record CreateBranchCommand(
     string? Email,
     string? Phone,
     string Address,
-    bool IsMainBranch,
-    Guid BusinessId) : ICommand;
+    bool IsMainBranch
+    ) : ICommand;
 

@@ -3,6 +3,7 @@ using Contract.Services.Business.Create;
 using Contract.Services.Business.GetBusinesses;
 using Contract.Services.Business.GetById;
 using Contract.Services.Business.Share;
+using Contract.Services.Verifications.Create;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -79,9 +80,19 @@ public class BusinessApiEndpoints : CarterModule
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });
 
-        app.MapPost(string.Empty, async (ISender sender, [FromBody] SaveBusinessCommand createBusinessCommand) =>
+        app.MapPut("{accountId}", async (ISender sender, [FromBody] SaveBusinessCommand createBusinessCommand) =>
         {
             var result = await sender.Send(createBusinessCommand);
+
+            return Results.Ok(result);
+        }).WithOpenApi(x => new OpenApiOperation(x)
+        {
+            Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
+        });
+
+        app.MapPost("{id}/verify", async (ISender sender, [FromBody] CreateVerificationCommand createVerificationCommand) =>
+        {
+            var result = await sender.Send(createVerificationCommand);
 
             return Results.Ok(result);
         }).WithOpenApi(x => new OpenApiOperation(x)

@@ -14,7 +14,7 @@ public class SaveBusinessValidator : AbstractValidator<SaveBusinessCommand>
         RuleFor(req => req.DateOfEstablishments)
           .NotEmpty().WithMessage("Ngày thành lập không được trống")
         .Must(date => date < DateOnly.FromDateTime(DateTime.Now))
-              .WithMessage("Ngày thành lập phải là ngày trong quá khứ");
+              .WithMessage("Ngày thành lập không phải là ngày của tương lai");
 
         RuleFor(req => req.IndustryIds)
           .NotEmpty().WithMessage("Doanh nghiệp phải có lĩnh vực");

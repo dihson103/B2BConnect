@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Application.Abstractions.Data;
+﻿using Application.Abstractions.Data;
 using Application.Abstractions.Services;
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
@@ -12,22 +11,33 @@ using FluentValidation;
 namespace Application.UseCases.Commands.Businesses.Create;
 public class SaveBusinessCommandHandler(IBusinessRepository _businessRepository, IRequestContext _context,
     IUnitOfWork _unitOfWork, IBranchRepository _branchRepository, ISectorRepository _sectorRepository,
-    IRepresentativeRepository _representativeRepository,
-    IValidator<SaveBusinessCommand> _businessValidator, IValidator<CreateBranchCommand> _branchValidator) : ICommandHandler<SaveBusinessCommand>
+    IRepresentativeRepository _representativeRepository, IAccountRepository _accountRepository,
+    IValidator<SaveBusinessCommand> _businessValidator, IValidator<CreateBranchCommand> _branchValidator)
+    : ICommandHandler<SaveBusinessCommand>
 {
     public async Task<Result.Success> Handle(SaveBusinessCommand request, CancellationToken cancellationToken)
     {
         await ValidateBusinessAsync(request!);
 
         await ValidateBranchAsync(request.Branches);
-        var loggedUser = _context.UserLoggedIn;
+        var loggedUser = _context.UserLoggedIn ?? throw new MyBadRequestException("Tài khoản chưa đăng nhập");
+
+        var isAdminLogged = _context.IsAdminLogged;
         var branches = new List<Branch>();
         var businesIndustry = new List<Sector>();
 
-        if (request?.id == null || request.id == Guid.Empty)
+        if (request?.accountId == null || request.accountId == Guid.Empty)
+            throw new MyBadRequestException("accountId không được rỗng");
+
+        var account = await _accountRepository.GetAccountByIdAsync(request.accountId)
+                    ?? throw new MyBadRequestException("accountId không tồn tại");
+
+        var business = await _businessRepository.getByAccountIdAsync(account.Id);
+
+        if (business == null)
         {
-            var business = Business.Create(request!, loggedUser);
-            business.AccountId = new Guid(loggedUser);
+            business = Business.Create(request!, loggedUser);
+            business.AccountId = account.Id;
             _businessRepository.Add(business);
 
             if (request!.RepresentativeSave != null)
@@ -37,48 +47,49 @@ public class SaveBusinessCommandHandler(IBusinessRepository _businessRepository,
                 _representativeRepository.Add(re);
             }
 
-
             businesIndustry = request!.IndustryIds.Select(i => Sector.Create(business.Id, i)).ToList();
 
             if (request.Branches != null)
             {
                 foreach (var b in request.Branches)
                 {
-                    var branchCommand = new CreateBranchCommand(b.Email, b.Phone, b.Address, b.IsMainBranch, business.Id);
+                    var branchCommand = new CreateBranchCommand(b.Email, b.Phone, b.Address, b.IsMainBranch);
                     var branch = Branch.Create(branchCommand);
+                    branch.BusinessId = business.Id;
                     branches.Add(branch);
                 }
             }
         }
         else
         {
-            var business = await _businessRepository.GetByIdAsync(request.id)
-                    ?? throw new MyBadRequestException("Doanh nghiệp không tồn tại");
-
-            business.Update(request, loggedUser);
-            _businessRepository.Update(business);
-
-            if (request!.RepresentativeSave != null)
+            if (isAdminLogged || business.AccountId == new Guid(loggedUser))
             {
-                _representativeRepository.DeleteByBusinessId(business!.Id);
-                var re = Representative.Create(request.RepresentativeSave!);
-                re.BusinessId = business.Id;
-                _representativeRepository.Add(re);
-            }
+                business.Update(request, loggedUser);
+                _businessRepository.Update(business);
 
-            if (request.Branches != null)
-            {
-                _branchRepository.DeleteByBusinessId(business.Id);
-                foreach (var b in request.Branches)
+                if (request!.RepresentativeSave != null)
                 {
-                    var branchCommand = new CreateBranchCommand(b.Email, b.Phone, b.Address, b.IsMainBranch, business.Id);
-                    var branch = Branch.Create(branchCommand);
-                    branches.Add(branch);
+                    _representativeRepository.DeleteByBusinessId(business!.Id);
+                    var re = Representative.Create(request.RepresentativeSave!);
+                    re.BusinessId = business.Id;
+                    _representativeRepository.Add(re);
                 }
-            }
 
-            _sectorRepository.DeleteByBusinessId(business.Id);
-            businesIndustry = request!.IndustryIds.Select(i => Sector.Create(business.Id, i)).ToList();
+                if (request.Branches != null)
+                {
+                    _branchRepository.DeleteByBusinessId(business.Id);
+                    foreach (var b in request.Branches)
+                    {
+                        var branchCommand = new CreateBranchCommand(b.Email, b.Phone, b.Address, b.IsMainBranch);
+                        var branch = Branch.Create(branchCommand);
+                        branch.BusinessId = business.Id;
+                        branches.Add(branch);
+                    }
+                }
+
+                _sectorRepository.DeleteByBusinessId(business.Id);
+                businesIndustry = request!.IndustryIds.Select(i => Sector.Create(business.Id, i)).ToList();
+            }
         }
 
         if (businesIndustry.Count > 0)

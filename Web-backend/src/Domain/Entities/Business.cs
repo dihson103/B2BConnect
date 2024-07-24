@@ -33,6 +33,7 @@ public class Business : EntityAuditBase<Guid>
             DateOfEstablishment = businessCommand.DateOfEstablishments,
             WebSite = businessCommand.WebSite,
             AvatarImage = businessCommand.AvatarImage,
+            NumberOfEmployee =businessCommand.NumberOfEmployee,
             CoverImage = businessCommand.CoverImage,
             CreatedBy = CreateBy.ToString(),
             CreatedDate = DateTime.UtcNow
@@ -46,6 +47,7 @@ public class Business : EntityAuditBase<Guid>
         DateOfEstablishment = businessCommand.DateOfEstablishments;
         WebSite = businessCommand.WebSite;
         AvatarImage = businessCommand.AvatarImage;
+        NumberOfEmployee = businessCommand.NumberOfEmployee;
         CoverImage = businessCommand.CoverImage;
         UpdatedBy = loggedUser;
         UpdatedDate = DateTime.UtcNow;

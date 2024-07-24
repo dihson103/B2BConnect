@@ -24,7 +24,6 @@ public class Branch : EntityBase<Guid>
             Phone = branch.Phone,
             Address = branch.Address,
             IsMainBranch = branch.IsMainBranch,
-            BusinessId = branch.BusinessId
         };
     }
 
