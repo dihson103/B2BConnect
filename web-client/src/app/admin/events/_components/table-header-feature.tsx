@@ -17,12 +17,12 @@ export default function EventTableHeader({ searchOptions }: Props) {
   const pathname = usePathname()
   const router = useRouter()
 
-  const [searchTearm, setSearchTearm] = useState(searchOptions.searchTearm ?? '')
+  const [searchTearm, setSearchTearm] = useState(searchOptions.searchTerm ?? '')
   const [status, setStatus] = useState<number>(searchOptions.status ?? 0)
 
   const searchTearmChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTearm(event.target.value)
-    handleSearch('searchTearm', event.target.value)()
+    handleSearch('searchTerm', event.target.value)()
   }
 
   const statusChange = (value: string) => {

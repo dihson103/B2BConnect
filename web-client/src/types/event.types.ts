@@ -27,15 +27,42 @@ export type CreateEventType = {
   startAt: string
   endAt: string
   location: string
-  image: string
   description: string
   industryIds: string[]
+  images: ImageRequest[]
 }
 
-export type UpdateEventType = CreateEventType & {
+export type ImageRequest = {
+  image: string
+  isMain: boolean
+}
+
+export type UpdateEventType = {
+  name: string
+  startAt: string
+  endAt: string
+  location: string
+  description: string
+  industryIds: string[]
+  imageRequests: ImageRequest[]
   status: number
 }
 
-export type EventDetail = Event & {
+export type ImageResponse = {
+  id: string
+  path: string
+  isMain: boolean
+}
+
+export type EventDetail = {
+  id: string
+  name: string
+  startAt: string
+  endAt: string
+  location: string
+  description: string
+  status: number
+  statusDescription: string
   industries: IndustryResponse[]
+  images: ImageResponse[]
 }

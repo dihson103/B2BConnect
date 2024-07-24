@@ -23,7 +23,6 @@ export const UpdateEventSchema = z
     endDate: z.string(),
     location: z.string().min(1, 'Địa điểm không được để trống.'),
     description: z.string(),
-    image: z.string(),
     status: z.string()
   })
   .refine((data) => new Date(data.endDate) > new Date(data.startDate), {

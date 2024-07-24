@@ -40,7 +40,7 @@ public class Event : EntityAuditBase<Guid>
         };
     }
 
-    public void Update(UpdateEventRequest request, string updatedBy)
+    public void Update(UpdateEventRequest request, string updatedBy, List<EventMedia> eventMedias)
     {
         var newEventIndustries = request.IndustryIds
             .Select(industryId => EventIndustry.Create(Id, industryId))
@@ -53,6 +53,7 @@ public class Event : EntityAuditBase<Guid>
         Status = request.Status;
         Location = request.Location;
         EventIndustries = newEventIndustries;
+        EventMedias = eventMedias;
         UpdatedBy = updatedBy;
         UpdatedDate = DateTime.UtcNow;
     }

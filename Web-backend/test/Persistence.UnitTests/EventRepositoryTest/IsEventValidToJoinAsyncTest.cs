@@ -27,7 +27,6 @@ public class IsEventValidToJoinAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null,
                 null
                 ),

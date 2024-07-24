@@ -7,6 +7,7 @@ using Contract.Services.Event.Share;
 using Domain.Abstractioins.Exceptions;
 using Domain.Entities;
 using Application.Abstractions.Services;
+using Contract.Services.Event.GetById;
 
 namespace Application.UnitTests.Commands.Events;
 public class UpdateEventCommandHandlerTest
@@ -15,6 +16,7 @@ public class UpdateEventCommandHandlerTest
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IRequestContext> _requestContextMock;
     private readonly Mock<IIndustryRepository> _industryRepositoryMock;
+    private readonly Mock<IMediaRepository> _mediaRepositoryMock;
     private readonly IValidator<UpdateEventRequest> _validator;
     private readonly UpdateEventCommandHandler handler;
 
@@ -24,8 +26,10 @@ public class UpdateEventCommandHandlerTest
         _unitOfWorkMock = new();
         _requestContextMock = new();
         _industryRepositoryMock = new();
+        _mediaRepositoryMock = new();
         _validator = new UpdateEventValidator(_industryRepositoryMock.Object);
-        handler = new(_eventRepositoryMock.Object, _requestContextMock.Object, _unitOfWorkMock.Object, _validator);
+        handler = new(_eventRepositoryMock.Object, _mediaRepositoryMock.Object,
+            _requestContextMock.Object, _unitOfWorkMock.Object, _validator);
     }
 
     [Fact]
@@ -38,7 +42,7 @@ public class UpdateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(9),
             DateTime.UtcNow.AddHours(10),
             "Location",
-            "Image",
+            new List<EventImageRequest> { new EventImageRequest( "oimage.png", true) },
             industryIds,
             EventStatus.PLANNING);
         var updateEventCommand = new UpdateEventCommand(Guid.NewGuid(), updateEventRequest);
@@ -66,7 +70,7 @@ public class UpdateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(3),
             DateTime.UtcNow.AddHours(10),
             "Location",
-            "Image",
+            new List<EventImageRequest> { new EventImageRequest("oimage.png", true) },
             industryIds,
             EventStatus.PLANNING);
         var updateEventCommand = new UpdateEventCommand(Guid.NewGuid(), updateEventRequest);
@@ -94,7 +98,7 @@ public class UpdateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(10),
             DateTime.UtcNow.AddHours(9),
             "Location",
-            "Image",
+            new List<EventImageRequest> { new EventImageRequest("oimage.png", true) },
             industryIds,
             EventStatus.PLANNING);
         var updateEventCommand = new UpdateEventCommand(Guid.NewGuid(), updateEventRequest);
@@ -105,6 +109,7 @@ public class UpdateEventCommandHandlerTest
         _eventRepositoryMock
             .Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(Event.Create());
+        _mediaRepositoryMock.Setup(repo => repo.IsAllMediasExistAsync(It.IsAny<List<Guid>>())).ReturnsAsync(true);
 
         await Assert.ThrowsAsync<MyValidationException>(async () =>
         {
@@ -122,7 +127,7 @@ public class UpdateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(8),
             DateTime.UtcNow.AddHours(9),
             "Location",
-            "Image",
+            new List<EventImageRequest> { new EventImageRequest("oimage.png", true) },
             industryIds,
             EventStatus.PLANNING);
         var updateEventCommand = new UpdateEventCommand(Guid.NewGuid(), updateEventRequest);
@@ -133,6 +138,7 @@ public class UpdateEventCommandHandlerTest
         _eventRepositoryMock
             .Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(Event.Create());
+        _mediaRepositoryMock.Setup(repo => repo.IsAllMediasExistAsync(It.IsAny<List<Guid>>())).ReturnsAsync(true);
 
         await Assert.ThrowsAsync<MyValidationException>(async () =>
         {
@@ -141,14 +147,10 @@ public class UpdateEventCommandHandlerTest
     }
 
     [Theory]
-    [InlineData("", "location", "image")]
-    [InlineData("name", "", "image")]
-    [InlineData("name", "location", "")]
-    [InlineData("name", "", "")]
-    [InlineData("", "", "image")]
-    [InlineData("", "location", "")]
-    [InlineData("", "", "")]
-    public async Task Handler_ShouldThrowMyException_WhenValidationFails(string name, string location, string image)
+    [InlineData("name", "")]
+    [InlineData("", "location")]
+    [InlineData("", "")]
+    public async Task Handler_ShouldThrowMyException_WhenValidationFails(string name, string location)
     {
         var industryIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
         var updateEventRequest = new UpdateEventRequest(
@@ -157,7 +159,7 @@ public class UpdateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(8),
             DateTime.UtcNow.AddHours(9),
             location,
-            image,
+            new List<EventImageRequest> { new EventImageRequest("oimage.png", true) },
             industryIds,
             EventStatus.PLANNING);
         var updateEventCommand = new UpdateEventCommand(Guid.NewGuid(), updateEventRequest);
@@ -168,6 +170,7 @@ public class UpdateEventCommandHandlerTest
         _eventRepositoryMock
             .Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(Event.Create());
+        _mediaRepositoryMock.Setup(repo => repo.IsAllMediasExistAsync(It.IsAny<List<Guid>>())).ReturnsAsync(true);
 
         await Assert.ThrowsAsync<MyValidationException>(async () =>
         {
@@ -185,7 +188,7 @@ public class UpdateEventCommandHandlerTest
             DateTime.UtcNow.AddHours(8),
             DateTime.UtcNow.AddHours(9),
             "Location",
-            "Image",
+            new List<EventImageRequest> { new EventImageRequest("oimage.png", true) },
             industryIds,
             EventStatus.PLANNING);
         var updateEventCommand = new UpdateEventCommand(Guid.NewGuid(), updateEventRequest);
@@ -196,6 +199,7 @@ public class UpdateEventCommandHandlerTest
         _eventRepositoryMock
             .Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(Event.Create());
+        _mediaRepositoryMock.Setup(repo => repo.IsAllMediasExistAsync(It.IsAny<List<Guid>>())).ReturnsAsync(true);
 
         var result = await handler.Handle(updateEventCommand, default);
 

@@ -2,6 +2,7 @@
 using Application.Abstractions.Services;
 using Contract.Abstractions.Dtos.Results;
 using Contract.Abstractions.Messages;
+using Contract.Services.Event.GetById;
 using Contract.Services.Event.Share;
 using Contract.Services.Event.Update;
 using Domain.Abstractioins.Exceptions;
@@ -11,6 +12,7 @@ using FluentValidation;
 namespace Application.UseCases.Commands.Events.Update;
 internal sealed class UpdateEventCommandHandler(
     IEventRepository _eventRepository,
+    IMediaRepository _mediaRepository,
     IRequestContext _context,
     IUnitOfWork _unitOfWork,
     IValidator<UpdateEventRequest> _validator) : ICommandHandler<UpdateEventCommand>
@@ -20,9 +22,21 @@ internal sealed class UpdateEventCommandHandler(
         var eventt = await GetEventAndValidateRequest(request);
 
         var updatedBy = _context.UserLoggedIn;
-        
-        eventt.Update(request.UpdateEventRequest, updatedBy);
 
+        var medias = new List<Media>();
+        var eventMedias = new List<EventMedia>();
+
+        foreach(var imageRequest in request.UpdateEventRequest.ImageRequests)
+        {
+            var media = Media.Create(imageRequest.image, updatedBy);
+            medias.Add(media);
+            var eventMedia = EventMedia.Create(eventt.Id, media.Id, imageRequest.isMain);
+            eventMedias.Add(eventMedia);
+        }
+        
+        eventt.Update(request.UpdateEventRequest, updatedBy, eventMedias);
+
+        _mediaRepository.AddRange(medias);
         _eventRepository.Update(eventt);
         await _unitOfWork.SaveChangesAsync();
 

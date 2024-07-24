@@ -24,7 +24,7 @@ public class FileEndPoints : CarterModule
         }).WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Files api" } }
-        }).DisableAntiforgery();
+        }).RequireAuthorization().DisableAntiforgery();
 
         app.MapGet("{fileName}", async (ISender sender, [FromRoute] string fileName, HttpContext context) =>
         {
@@ -48,7 +48,7 @@ public class FileEndPoints : CarterModule
             var result = await sender.Send(uploadFilesCommand);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new OpenApiTag { Name = "Files api" } }
         }).DisableAntiforgery();

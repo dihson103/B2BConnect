@@ -9,12 +9,13 @@ internal class UploadFilesCommandHanlder(IFileService _fileService) : ICommandHa
     public async Task<Result.Success<List<string>>> Handle(UploadFilesCommand request, CancellationToken cancellationToken)
     {
         var fileNames = new List<string>();
+
         foreach (var file in request.ReceivedFiles)
         {
             var uploadedFileName = await _fileService.Upload(file);
             fileNames.Add(uploadedFileName);
         }
 
-        return Result.Success<List<string>>.ActionCommand(fileNames, "Tải file thành công");
+        return Result.Success<List<string>>.ActionCommand(fileNames);
     }
 }

@@ -33,7 +33,7 @@ public class LoginAccountCommandHandlerTest
     public async Task Handle_ShouldThrowMyUnauthorizedException_WhenWrongEmail() {
         var loginCommand = new LoginCommand("wrongEmail", "password");
         _accountRepositoryMock.Setup(s => s.LoginAsync(It.IsAny<string>())).ReturnsAsync((Account) null);
-        await Assert.ThrowsAsync<MyUnauthorizedException>(async () => {
+        await Assert.ThrowsAsync<MyBadRequestException>(async () => {
            var result = await _handler.Handle(loginCommand, default);
         });
     }
@@ -42,7 +42,7 @@ public class LoginAccountCommandHandlerTest
     public async Task Handle_ShouldThrowMyUnauthorizedException_WhenWrongPassword() {
          var loginCommand = new LoginCommand("wrongEmail", "password");
         _passwordServiceMock.Setup(s => s.IsVerify(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
-        await Assert.ThrowsAsync<MyUnauthorizedException>(async () => {
+        await Assert.ThrowsAsync<MyBadRequestException>(async () => {
            var result = await _handler.Handle(loginCommand, default);
         });
     }

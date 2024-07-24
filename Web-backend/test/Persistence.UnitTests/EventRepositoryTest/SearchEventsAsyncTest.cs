@@ -35,7 +35,6 @@ public class SearchEventsAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null, null
                 ),
             "098788"
@@ -47,7 +46,6 @@ public class SearchEventsAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null, null
                 ),
             "09788"
@@ -59,7 +57,6 @@ public class SearchEventsAsyncTest : IDisposable
                 DateTime.UtcNow.AddHours(1),
                 DateTime.UtcNow.AddHours(2),
                 "Location",
-                "Image",
                 null,
                 null
                 ),

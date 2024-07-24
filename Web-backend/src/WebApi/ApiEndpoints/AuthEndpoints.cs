@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using Contract.Services.Account.Login;
 using Contract.Services.Account.Logout;
 using Contract.Services.Account.Create;
-using System.IdentityModel.Tokens.Jwt;
 
 
 namespace WebApi.ApiEndpoints;
