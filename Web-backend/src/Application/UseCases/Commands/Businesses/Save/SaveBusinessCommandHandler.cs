@@ -26,11 +26,8 @@ public class SaveBusinessCommandHandler(IBusinessRepository _businessRepository,
         var branches = new List<Branch>();
         var businesIndustry = new List<Sector>();
 
-        if (request?.accountId == null || request.accountId == Guid.Empty)
-            throw new MyBadRequestException("accountId không được rỗng");
-
         var account = await _accountRepository.GetAccountByIdAsync(request.accountId)
-                    ?? throw new MyBadRequestException("accountId không tồn tại");
+                    ?? throw new MyBadRequestException("account không tồn tại");
 
         var business = await _businessRepository.getByAccountIdAsync(account.Id);
 
