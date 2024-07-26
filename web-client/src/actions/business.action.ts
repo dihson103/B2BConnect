@@ -3,7 +3,7 @@ import { SearchBusinessOption, SearchBusinessResponse } from '@/types/business.t
 
 export const searchBusinessAction = (searchParams: SearchBusinessOption) => {
   const response = http.get<SearchBusinessResponse>(
-    `/businesses?searchTerm=${searchParams.searchTearm ?? ''}&isVerified=${searchParams.isVerified ?? true}&pageIndex=${searchParams.pageIndex ?? 1}&pageSize=${searchParams.pageSize ?? 10}`
+    `/businesses/byAdmin?searchTerm=${searchParams.searchTearm ?? ''}&isVerified=${searchParams.isVerified ?? true}&pageIndex=${searchParams.pageIndex ?? 1}&pageSize=${searchParams.pageSize ?? 10}`
   )
   return response
 }

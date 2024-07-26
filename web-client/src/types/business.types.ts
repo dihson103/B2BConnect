@@ -24,3 +24,13 @@ export type SearchBusinessOption = {
 }
 
 export type SearchBusinessResponse = SearchResponse<BusinessResponse[]>
+
+export type SearchBusinessQueryOption = {
+  searchTerm: string | null
+  industries: string | null
+  company_size: string | null
+  isVerified: string | null
+  number_year_operation: string | null
+}
+
+export type SearchBusinessQueryOptionKeys = keyof SearchBusinessQueryOption

@@ -7,7 +7,7 @@ export default function List({ title, list }: props) {
   return (
     <>
       <div>
-        <h2 className='mb-2 text-lg font-semibold text-gray-900 dark:text-white'>{title}</h2>
+        {title ? <h2 className='mb-2 text-lg font-semibold text-gray-900 dark:text-white'>{title}</h2> : null}
         <ul className='max-w-md space-y-1 text-gray-500 list-inside dark:text-gray-400'>
           {list.length > 0 ? (
             list.map((ls, index) => (
