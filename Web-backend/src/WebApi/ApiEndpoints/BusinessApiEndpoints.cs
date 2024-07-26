@@ -18,7 +18,8 @@ public class BusinessApiEndpoints : CarterModule
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet("byUser", async (ISender sender, [FromQuery] string? searchTerm,
-            [FromQuery] string? industryIds, [FromQuery] NumberOfEmployee? numberOfEmployee, 
+            [FromQuery] string? industryIds,[FromQuery] bool? IsVerified, [FromQuery] NumberOfEmployee? numberOfEmployee,
+            [FromQuery] NumberOfYearEstablished? noyEstablished,
              [FromQuery] int pageIndex = 1, 
             [FromQuery] int pageSize = 10) =>
         {
@@ -35,7 +36,9 @@ public class BusinessApiEndpoints : CarterModule
             var getBusinessesQuery = new GetBusinessesByUserQuery(
                 SearchTerm: searchTerm,
                 IndustryIds: parsedIndustryIds,
+                IsVerified: IsVerified,
                 NumberOfEmployee: numberOfEmployee,
+                NOYEstablished: noyEstablished,
                 PageIndex: pageIndex,
                 PageSize: pageSize
             );

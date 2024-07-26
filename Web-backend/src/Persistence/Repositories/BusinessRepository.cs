@@ -26,7 +26,7 @@ public class BusinessRepository : IBusinessRepository
         return await _context.Businesses
                     .AsNoTracking()
                      .AsSplitQuery()
-                    . SingleOrDefaultAsync(b => b.AccountId == id);
+                    .SingleOrDefaultAsync(b => b.AccountId == id);
     }
 
     public async Task<Business> GetByIdAsync(Guid id)
@@ -51,20 +51,15 @@ public class BusinessRepository : IBusinessRepository
 
     public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesByUserQuery getBusinessesQuery)
     {
-        var query = _context.Businesses!
-        .Join(_context.Accounts,
-              b => b.AccountId,
-              a => a.Id,
-              (b, a) => new { Business = b, Account = a })
-        .Where(ba => ba.Account.IsActive) // Lọc các business có IsActive = true
-        .Select(ba => ba.Business)
-        .AsQueryable();
+        var query = _context.Businesses
+            .Include(b => b.Account)
+            .Include(b => b.Branches)
+            .AsQueryable();
 
         if (getBusinessesQuery.IndustryIds != null && getBusinessesQuery.IndustryIds.Any())
         {
             query = query
-                .Where(b => b.Sectors!
-                    .Any(s => getBusinessesQuery.IndustryIds.Contains(s.IndustryId)));
+                .Where(b => b.Sectors != null && b.Sectors.Any(s => getBusinessesQuery.IndustryIds.Contains(s.IndustryId)));
         }
 
         if (getBusinessesQuery.NumberOfEmployee.HasValue)
@@ -72,25 +67,54 @@ public class BusinessRepository : IBusinessRepository
             query = query.Where(b => b.NumberOfEmployee == getBusinessesQuery.NumberOfEmployee.Value);
         }
 
-        var businesses = await query
-          .OrderBy(b => b.DateOfEstablishment)
-          .AsNoTracking()
-          .ToListAsync();
+        if (getBusinessesQuery.IsVerified.HasValue)
+        {
+            query = query.Where(b => b.IsVerified == getBusinessesQuery.IsVerified);
+        }
 
         if (!string.IsNullOrEmpty(getBusinessesQuery.SearchTerm))
         {
-            var s = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Giải mã từ URL
-            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(s.ToLower());
+            var searchTerm = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Decode URL
+            var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(searchTerm.ToLower());
 
-            businesses = businesses
-                .Where(b => StringHandlerUtil.RemoveDiacritics(b.Name.ToLower()).Contains(searchTermNoDiacritics))
+            query = query
+                .Where(b =>
+                    b.Branches != null && b.Branches.Any(br => StringHandlerUtil.RemoveDiacritics(br.Address.ToLower()).Contains(searchTermNoDiacritics)) ||
+                    StringHandlerUtil.RemoveDiacritics(b.Name.ToLower()).Contains(searchTermNoDiacritics)
+                );
+        }
+
+        var businesses = await query
+            .OrderBy(b => b.DateOfEstablishment)
+            .AsNoTracking()
+            .ToListAsync();
+
+        if (getBusinessesQuery.NOYEstablished.HasValue)
+        {
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            var filteredBusinesses = businesses
+                .Where(b =>
+                {
+                    var daysEstablished = CalculateDaysBetweenDates(b.DateOfEstablishment, currentDate);
+                    var yearsEstablished = daysEstablished / 365.0; 
+
+                    return getBusinessesQuery.NOYEstablished switch
+                    {
+                        NumberOfYearEstablished.LessThanOneYear => yearsEstablished < 1,
+                        NumberOfYearEstablished.TwoToFiveYears => yearsEstablished >= 1 && yearsEstablished < 5,
+                        NumberOfYearEstablished.FiveToTenYears => yearsEstablished >= 5 && yearsEstablished < 10,
+                        NumberOfYearEstablished.TenToTwentyYears => yearsEstablished >= 10 && yearsEstablished < 20,
+                        NumberOfYearEstablished.OverTwentyYears => yearsEstablished >= 20,
+                        _ => false
+                    };
+                })
                 .ToList();
+
+            businesses = filteredBusinesses;
         }
 
         var totalItems = await query.CountAsync();
         int totalPages = (int)Math.Ceiling((double)totalItems / getBusinessesQuery.PageSize);
-
-
 
         businesses = businesses
             .Skip((getBusinessesQuery.PageIndex - 1) * getBusinessesQuery.PageSize)
@@ -98,6 +122,12 @@ public class BusinessRepository : IBusinessRepository
             .ToList();
 
         return (businesses, totalPages, totalItems);
+    }
+
+
+    private int CalculateDaysBetweenDates(DateOnly startDate, DateOnly endDate)
+    {
+        return (endDate.ToDateTime(TimeOnly.MinValue) - startDate.ToDateTime(TimeOnly.MinValue)).Days;
     }
 
     public async Task<(List<Business>?, int, int)> SearchBusinessesByAdminAsync(GetBusinessesByAdminQuery request)
