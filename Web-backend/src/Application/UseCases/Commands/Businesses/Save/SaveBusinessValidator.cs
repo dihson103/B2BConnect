@@ -1,10 +1,15 @@
 ﻿using Contract.Services.Business.Create;
+using Domain.Abstractioins.Exceptions;
 using FluentValidation;
+using MediatR;
 namespace Application.UseCases.Commands.Businesses.Create;
 public class SaveBusinessValidator : AbstractValidator<SaveBusinessCommand>
 {
     public SaveBusinessValidator()
     {
+       
+        RuleFor(req => req.accountId).NotEmpty().WithMessage("Account Id không được rỗng");
+
         RuleFor(req => req.TaxCode)
            .NotEmpty().WithMessage("Mã số thuế không được trống");
 
