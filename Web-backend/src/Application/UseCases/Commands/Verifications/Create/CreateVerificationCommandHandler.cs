@@ -18,37 +18,35 @@ public class CreateVerificationCommandHandler(IVerificationRepository _verificat
     {
         await ValidateRequest(request);
 
+        var loggedUser = _context.UserLoggedIn;
+
         Guid businessId = request.BusinessId;
 
-        // Cập nhật doanh nghiệp
         var business = await _businessRepository.GetByIdAsync(businessId);
-        if(business != null)
+        if (business != null)
         {
+            business.Update(request);
+            _businessRepository.Update(business);
+
             var re = await _representativeRepository.GetByBusinessId(businessId);
             if (re != null)
             {
                 re.Fullname = request.representativeName;
                 re.GovernmentId = request.govermentId;
-                _representativeRepository.Update(re);  
+                _representativeRepository.Update(re);
             }
-           
-            business.TaxCode = request.taxNumber;
-            business.Name = request.name;
-            business.WebSite = request.website;
-            business.DateOfEstablishment = request.dateOfEstablishment;
-            business.NumberOfEmployee = request.NumberOfEmployee;
-            _businessRepository.Update(business);
 
             // Xóa chi nhánh chính
             _branchRepository.DeleteMainBranchOfBusiness(businessId);
             var branchCommand = new CreateBranchCommand(request.email, request.phone, request.address, true);
             var branch = Branch.Create(branchCommand);
+            branch.BusinessId = business.Id;
             _branchRepository.Add(branch);
 
             // Tạo và lưu xác thực
             Verification verification = Verification.Create(request);
             verification.CreatedDate = DateTime.UtcNow;
-            verification.CreatedBy = _context.UserLoggedIn;
+            verification.CreatedBy = loggedUser;
             _verificationRepository.Add(verification);
 
             await _unitOfWork.SaveChangesAsync();

@@ -4,6 +4,8 @@ using Contract.Services.Business.GetBusinesses;
 using Contract.Services.Business.GetById;
 using Contract.Services.Business.Share;
 using Contract.Services.Verifications.Create;
+using Contract.Services.Verifications.Update;
+using Domain.Abstractioins.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -17,36 +19,12 @@ public class BusinessApiEndpoints : CarterModule
     }
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("byUser", async (ISender sender, [FromQuery] string? searchTerm,
-            [FromQuery] string? industryIds,[FromQuery] bool? IsVerified, [FromQuery] NumberOfEmployee? numberOfEmployee,
-            [FromQuery] NumberOfYearEstablished? noyEstablished,
-             [FromQuery] int pageIndex = 1, 
-            [FromQuery] int pageSize = 10) =>
+        app.MapGet("byUser", async (ISender sender, [AsParameters] GetBusinessesByUserQuery getBusinessesByUserQuery) =>
         {
-            List<Guid>? parsedIndustryIds = null;
-            if (!string.IsNullOrEmpty(industryIds))
-            {
-                parsedIndustryIds = industryIds.Split(',')
-                    .Select(id => Guid.TryParse(id.Trim(), out var guid) ? guid : (Guid?)null)
-                    .Where(guid => guid.HasValue)
-                    .Select(guid => guid!.Value)
-                    .ToList();
-            }
-
-            var getBusinessesQuery = new GetBusinessesByUserQuery(
-                SearchTerm: searchTerm,
-                IndustryIds: parsedIndustryIds,
-                IsVerified: IsVerified,
-                NumberOfEmployee: numberOfEmployee,
-                NOYEstablished: noyEstablished,
-                PageIndex: pageIndex,
-                PageSize: pageSize
-            );
-
-            var result = await sender.Send(getBusinessesQuery);
+            var result = await sender.Send(getBusinessesByUserQuery);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });
@@ -57,7 +35,7 @@ public class BusinessApiEndpoints : CarterModule
             var result = await sender.Send(getBusinessesQuery);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization("require-admin").WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });
@@ -68,7 +46,7 @@ public class BusinessApiEndpoints : CarterModule
             var result = await sender.Send(new GetByIdQuery(id));
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });
@@ -78,7 +56,7 @@ public class BusinessApiEndpoints : CarterModule
             var result = await sender.Send(query);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization("require-admin").WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });
@@ -88,7 +66,7 @@ public class BusinessApiEndpoints : CarterModule
             var result = await sender.Send(createBusinessCommand);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });
@@ -98,7 +76,17 @@ public class BusinessApiEndpoints : CarterModule
             var result = await sender.Send(createVerificationCommand);
 
             return Results.Ok(result);
-        }).WithOpenApi(x => new OpenApiOperation(x)
+        }).RequireAuthorization().WithOpenApi(x => new OpenApiOperation(x)
+        {
+            Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
+        });
+
+        app.MapPut("{id}/verify", async (ISender sender, [FromBody] UpdateVerificationCommand createBusinessCommand) =>
+        {
+            var result = await sender.Send(createBusinessCommand);
+
+            return Results.Ok(result);
+        }).RequireAuthorization("require-admin").WithOpenApi(x => new OpenApiOperation(x)
         {
             Tags = new List<OpenApiTag> { new() { Name = "Businesses api" } }
         });

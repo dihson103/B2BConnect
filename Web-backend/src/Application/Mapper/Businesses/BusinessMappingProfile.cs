@@ -21,7 +21,8 @@ public class BusinessMappingProfile : Profile
                 src.WebSite,
                 src.AvatarImage,
                 src.CoverImage,
-                src.NumberOfEmployee.ToString(),
+                src.NumberOfEmployee,
+                src.NumberOfEmployee.GetDescription(),
                 src.IsVerified,
                 src.Account != null ? new AccountResponse(
                     src.Account.Email,

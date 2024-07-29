@@ -5,7 +5,8 @@ using Domain.Entities;
 namespace Application.Abstractions.Data;
 public interface IBusinessRepository
 {
-    Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesByUserQuery getBusinessesQuery);
+    Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesByUserQuery getBusinessesQuery,
+        List<Guid>? industryIds, List<int>? NOEs, List<int>? NOYs);
 
     Task<Business> GetByIdAsync(Guid id);
     Task<bool> IsBusinessValidAsync(Guid id);
