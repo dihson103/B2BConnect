@@ -19,6 +19,7 @@ public class Verification : EntityAuditBase<Guid>
         return new Verification()
         {
             BusinessLicense = command.businessLicense,
+            EstablishmentCertificate = command.establishmentCertificate,
             BusinessType = command.businessType,
             IsChecked = false,
             Note = command.note,

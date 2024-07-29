@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Linq;
+using System.Web;
 using Application.Abstractions.Data;
 using Application.Utils;
 using Contract.Services.Business.GetBusinesses;
@@ -49,22 +50,26 @@ public class BusinessRepository : IBusinessRepository
             .AnyAsync(b => b.Id == id && b.Account.IsActive == true);
     }
 
-    public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesByUserQuery getBusinessesQuery)
+    public async Task<(List<Business>?, int, int)> SearchBusinessAsync(GetBusinessesByUserQuery getBusinessesQuery,
+     List<Guid> industryIds, List<int>? NOEs, List<int>? NOYs)
     {
         var query = _context.Businesses
             .Include(b => b.Account)
             .Include(b => b.Branches)
+            .Include(b => b.Sectors)
             .AsQueryable();
 
-        if (getBusinessesQuery.IndustryIds != null && getBusinessesQuery.IndustryIds.Any())
+        if (industryIds != null && industryIds.Any())
         {
             query = query
-                .Where(b => b.Sectors != null && b.Sectors.Any(s => getBusinessesQuery.IndustryIds.Contains(s.IndustryId)));
+                .Where(b => b.Sectors != null && b.Sectors.Any(s => industryIds.Contains(s.IndustryId)));
         }
 
-        if (getBusinessesQuery.NumberOfEmployee.HasValue)
+        if (NOEs != null && NOEs.Any())
         {
-            query = query.Where(b => b.NumberOfEmployee == getBusinessesQuery.NumberOfEmployee.Value);
+            var enumNOEs = NOEs.Select(e => (NumberOfEmployee)e).ToList();
+
+            query = query.Where(b => enumNOEs.Contains(b.NumberOfEmployee));
         }
 
         if (getBusinessesQuery.IsVerified.HasValue)
@@ -74,7 +79,7 @@ public class BusinessRepository : IBusinessRepository
 
         if (!string.IsNullOrEmpty(getBusinessesQuery.SearchTerm))
         {
-            var searchTerm = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm); // Decode URL
+            var searchTerm = HttpUtility.UrlDecode(getBusinessesQuery.SearchTerm);
             var searchTermNoDiacritics = StringHandlerUtil.RemoveDiacritics(searchTerm.ToLower());
 
             query = query
@@ -89,24 +94,25 @@ public class BusinessRepository : IBusinessRepository
             .AsNoTracking()
             .ToListAsync();
 
-        if (getBusinessesQuery.NOYEstablished.HasValue)
+        if (NOYs != null && NOYs.Any())
         {
             var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
             var filteredBusinesses = businesses
                 .Where(b =>
                 {
                     var daysEstablished = CalculateDaysBetweenDates(b.DateOfEstablishment, currentDate);
-                    var yearsEstablished = daysEstablished / 365.0; 
+                    var yearsEstablished = daysEstablished / 365.0;
 
-                    return getBusinessesQuery.NOYEstablished switch
-                    {
-                        NumberOfYearEstablished.LessThanOneYear => yearsEstablished < 1,
-                        NumberOfYearEstablished.TwoToFiveYears => yearsEstablished >= 1 && yearsEstablished < 5,
-                        NumberOfYearEstablished.FiveToTenYears => yearsEstablished >= 5 && yearsEstablished < 10,
-                        NumberOfYearEstablished.TenToTwentyYears => yearsEstablished >= 10 && yearsEstablished < 20,
-                        NumberOfYearEstablished.OverTwentyYears => yearsEstablished >= 20,
-                        _ => false
-                    };
+                    return NOYs.Contains((int)NumberOfYearEstablished.LessThanOneYear) && yearsEstablished < 1.0
+                        ? true
+                        : NOYs.Contains((int)NumberOfYearEstablished.TwoToFiveYears) && yearsEstablished >= 1.0 && yearsEstablished < 5.0
+                        ? true
+                        : NOYs.Contains((int)NumberOfYearEstablished.FiveToTenYears) && yearsEstablished >= 5.0 && yearsEstablished < 10.0
+                        ? true
+                        : NOYs.Contains((int)NumberOfYearEstablished.TenToTwentyYears) && yearsEstablished >= 10.0 && yearsEstablished < 20.0
+                        ? true
+                        : NOYs.Contains((int)NumberOfYearEstablished.OverTwentyYears) && yearsEstablished >= 20.0;
                 })
                 .ToList();
 
@@ -221,6 +227,4 @@ public class BusinessRepository : IBusinessRepository
     {
         _context.Businesses.Update(business);
     }
-
-
 }

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Contract.Services.Business.Create;
 using Contract.Services.Business.Share;
+using Contract.Services.Verifications.Create;
 using Domain.Abstractioins.Enities;
+using MediatR;
 
 namespace Domain.Entities;
 public class Business : EntityAuditBase<Guid>
@@ -33,7 +35,7 @@ public class Business : EntityAuditBase<Guid>
             DateOfEstablishment = businessCommand.DateOfEstablishments,
             WebSite = businessCommand.WebSite,
             AvatarImage = businessCommand.AvatarImage,
-            NumberOfEmployee =businessCommand.NumberOfEmployee,
+            NumberOfEmployee = businessCommand.NumberOfEmployee,
             CoverImage = businessCommand.CoverImage,
             CreatedBy = CreateBy.ToString(),
             CreatedDate = DateTime.UtcNow
@@ -51,5 +53,14 @@ public class Business : EntityAuditBase<Guid>
         CoverImage = businessCommand.CoverImage;
         UpdatedBy = loggedUser;
         UpdatedDate = DateTime.UtcNow;
+    }
+
+    public void Update(CreateVerificationCommand request)
+    {
+        TaxCode = request.taxNumber;
+        Name = request.name;
+        WebSite = request.website;
+        DateOfEstablishment = request.dateOfEstablishment;
+        NumberOfEmployee = request.NumberOfEmployee;
     }
 }

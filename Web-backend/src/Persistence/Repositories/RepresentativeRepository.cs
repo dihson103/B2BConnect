@@ -39,18 +39,15 @@ public class RepresentativeRepository : IRepresentativeRepository
 
     public void Update(Representative re)
     {
-        // Ensure the entity is in the context and is being tracked
         var existingEntity = _context.Representatives.Local
             .FirstOrDefault(r => r.Id == re.Id);
 
         if (existingEntity != null)
         {
-            // If already tracked, update its properties
             _context.Entry(existingEntity).CurrentValues.SetValues(re);
         }
         else
         {
-            // Attach if not tracked yet
             _context.Representatives.Update(re);
         }
     }
